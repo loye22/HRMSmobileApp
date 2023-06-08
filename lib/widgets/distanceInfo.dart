@@ -17,7 +17,7 @@ class _distanceInfoState extends State<distanceInfo> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 400,
+      width: 350,
       height: 70,
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(30)),

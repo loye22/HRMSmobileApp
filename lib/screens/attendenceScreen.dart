@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,6 +42,7 @@ class _attendenceScreenState extends State<attendenceScreen>
   TabController? _tabController;
   File? _capturedImage;
   late double distance;
+  late Map<String, dynamic> weekSchedual;
 
   bool isLoading = false;
 
@@ -108,7 +110,7 @@ class _attendenceScreenState extends State<attendenceScreen>
                             unselectedLabelColor: Colors.black,
                             tabs: [
                               Tab(text: 'Check in-out'),
-                              Tab(text: 'Reports'),
+                              Tab(text: 'Week Schedual'),
                             ],
                           ),
                           Expanded(
@@ -279,15 +281,14 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                 // can use it to check out
 
                                                                                 try {
-
-                                                                                  this.isLoading= true ;
+                                                                                  this.isLoading = true;
                                                                                   setState(() {});
 
                                                                                   //1.
                                                                                   bool connectionStatus = await InternetConnectionChecker().hasConnection;
                                                                                   if (!connectionStatus) {
                                                                                     MyDialog.showAlert(context, 'Plase check you connection and try again !');
-                                                                                    isLoading = false ;
+                                                                                    isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
                                                                                   }
@@ -296,7 +297,7 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   XFile? image = await captureSelfie(context);
                                                                                   if (image == null) {
                                                                                     MyDialog.showAlert(context, "It is essential to inspect the photo.");
-                                                                                    isLoading = false ;
+                                                                                    isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
                                                                                   }
@@ -336,8 +337,8 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   });
 
                                                                                   // 4.
-                                                                                  await f.data!.setString('key', documentRef.id);
                                                                                   MyDialog.showAlert(context, 'Check-in successful');
+                                                                                  await f.data!.setString('key', documentRef.id);
                                                                                   this.isLoading = false;
                                                                                   setState(() {});
                                                                                 } catch (e) {
@@ -370,14 +371,14 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                 // 4. UPDATE!!!!  the check in detales record in the attendence collection
                                                                                 // 5. remove the shared
                                                                                 try {
-                                                                                  this.isLoading= true ;
+                                                                                  this.isLoading = true;
                                                                                   setState(() {});
 
                                                                                   //1.
                                                                                   bool connectionStatus = await InternetConnectionChecker().hasConnection;
                                                                                   if (!connectionStatus) {
                                                                                     MyDialog.showAlert(context, 'Plase check you connection and try again !');
-                                                                                    isLoading = false ;
+                                                                                    isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
                                                                                   }
@@ -386,7 +387,7 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   XFile? image = await captureSelfie(context);
                                                                                   if (image == null) {
                                                                                     MyDialog.showAlert(context, "It is essential to inspect the photo in Check out.");
-                                                                                    isLoading = false ;
+                                                                                    isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
                                                                                   }
@@ -401,37 +402,32 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   TaskSnapshot snapshot = await storage.ref().child('$folderPath/$fileName').putFile(File(image.path));
                                                                                   // Get the download URL of the uploaded image
                                                                                   String downloadUrl = await snapshot.ref.getDownloadURL();
-                                                                                  String? docId =  f.data!.getString('key');
+                                                                                  String? docId = f.data!.getString('key');
                                                                                   Position checkOutPostion = await _determinePositionfff();
-
 
                                                                                   // Define the document reference
                                                                                   FirebaseFirestore firestore = FirebaseFirestore.instance;
                                                                                   DocumentReference documentRef = firestore.collection('attendance').doc(docId);
 
                                                                                   // Update the specific fields
-                                                                                 await documentRef.update({
+                                                                                  await documentRef.update({
                                                                                     'checkOutTimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
                                                                                     'checkOutLat': checkOutPostion.latitude.toString(),
                                                                                     'checkOutLong': checkOutPostion.longitude.toString(),
-                                                                                    'checkOutIsHeIn': (this.calculateDistance(checkOutPostion.latitude, checkOutPostion.longitude, double.parse(this.currentBranshLocaion!['latitude']),
-                                                                                        double.parse(this.currentBranshLocaion!['longitude'])) <= 15 ? true : false ).toString(),
+                                                                                    'checkOutIsHeIn': (this.calculateDistance(checkOutPostion.latitude, checkOutPostion.longitude, double.parse(this.currentBranshLocaion!['latitude']), double.parse(this.currentBranshLocaion!['longitude'])) <= 100 ? true : false).toString(),
                                                                                     'checkOutPhoto': downloadUrl,
                                                                                   });
 
-                                                                                 //5.
+                                                                                  //5.
                                                                                   await f.data!.remove('key');
-                                                                                  isLoading = false ;
+                                                                                  isLoading = false;
                                                                                   setState(() {});
-
-                                                                                }
-                                                                                catch(e){
+                                                                                } catch (e) {
                                                                                   print(e);
                                                                                   MyDialog.showAlert(context, e.toString());
-
                                                                                 }
 
-                                                                               // await f.data!.remove('key');
+                                                                                // await f.data!.remove('key');
                                                                               },
                                                                               child: Container(
                                                                                 width: 70,
@@ -454,7 +450,9 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                       GestureDetector(
                                                                         onTap:
                                                                             () async {
-                                                                          setState(() {});},
+                                                                          setState(
+                                                                              () {});
+                                                                        },
                                                                         child:
                                                                             Container(
                                                                           width:
@@ -490,12 +488,41 @@ class _attendenceScreenState extends State<attendenceScreen>
 
                                 // Documents Tab
                                 Center(
-                                  child: _capturedImage == null
-                                      ? Text('reports')
-                                      : Container(
-                                          child: Image.file(_capturedImage!),
-                                        ),
-                                )
+                                    child: DataTable2(
+                                  columnSpacing: 12,
+                                  horizontalMargin: 12,
+                                  minWidth: 600,
+                                  columns: [
+                                    DataColumn2(
+                                      label: Text('Day'),
+                                      size: ColumnSize.L,
+                                    ),
+                                    DataColumn(
+                                      label: Text('Shift'),
+                                    ),
+                                    DataColumn(
+                                      label: Text('Bransh'),
+                                    ),
+                                  ],
+                                  rows: this
+                                      .weekSchedual['shifts']
+                                      .entries
+                                      .map<DataRow>((entry) {
+                                    String day = entry.key;
+
+                                    String shift = entry.value;
+                                    String shiftTimeRange =
+                                        shift.split(' ').sublist(1).join(' ');
+                                    String branch = shift.endsWith('Off')
+                                        ? 'OFF'
+                                        : shift.split(' ').last;
+                                    return DataRow(cells: [
+                                      DataCell(Text(getDayName(day))),
+                                      DataCell(Text(shiftTimeRange)),
+                                      DataCell(Text(branch)),
+                                    ]);
+                                  }).toList(),
+                                ))
                               ],
                             ),
                           ),
@@ -512,10 +539,22 @@ class _attendenceScreenState extends State<attendenceScreen>
 
   Future<void> initt() async {
     final shiftcurrentDay = await getShiftsData(currentUser!.uid);
+    this.weekSchedual = shiftcurrentDay!;
+    this.weekSchedual['shifts'].remove('bransh');
     this.currentBranshName = getBranchForCurrentDay(shiftcurrentDay!);
     final allLocaion = await fetchBranshesLocations();
-    this.currentBranshLocaion = allLocaion
-        .firstWhere((location) => location['title'] == this.currentBranshName);
+    print("debug <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< $currentBranshName");
+
+    //fixing the no bransh name
+
+    try {
+      this.currentBranshLocaion = allLocaion
+          .firstWhere((location) => location['title'] == this.currentBranshName);
+    } catch (e) {
+      this.currentBranshLocaion = allLocaion
+          .firstWhere((location) => location['title'] == "Defalt");
+    }
+
     this.empoyeeLocaion = await _determinePositionfff();
 
     this.distance = calculateDistance(
@@ -703,5 +742,26 @@ class _attendenceScreenState extends State<attendenceScreen>
 
   double degreesToRadians(double degrees) {
     return degrees * (pi / 180);
+  }
+
+  String getDayName(String day) {
+    switch (day) {
+      case 'mon':
+        return 'Monday';
+      case 'tur':
+        return 'Tuesday';
+      case 'wed':
+        return 'Wednesday';
+      case 'thu':
+        return 'Thursday';
+      case 'fri':
+        return 'Friday';
+      case 'sat':
+        return 'Saturday';
+      case 'sun':
+        return 'Sunday';
+      default:
+        return '';
+    }
   }
 }
