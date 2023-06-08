@@ -78,7 +78,19 @@ class _attendenceScreenState extends State<attendenceScreen>
             if (snapShot.hasError) {
               print(snapShot.error);
               return Center(
-                  child: Center(child: Text(snapShot.error.toString())));
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: AppColors.decoration,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200.withOpacity(0.25),
+                        ),
+                      ),
+                      Center(child: Text(snapShot.error.toString() , style: TextStyle(color: Colors.white , fontSize: 24 ),)),
+                    ],
+                  ));
             } else {
               return Stack(
                 alignment: Alignment.center,
@@ -538,15 +550,27 @@ class _attendenceScreenState extends State<attendenceScreen>
   }
 
   Future<void> initt() async {
+    // The alogrithm from check in-out
+    // 1. get the newiest shift Scedual for this employee , in case its null rasise exaption "No scedual shift found for you ,  please contact your HR "
+    // 2. extract the bransh name from the shiftdata for the current day since each employee may works in at diffrint branshes
+    // 3. load all branshes names with there locaions as List<Map<String, dynamic>> , in case its null  load the defalt locaion
+    // 4. load the loacion for the bransh that we get at step No.2 by looking for him in the list we loaded in stpep No.3
+    // 5. load current employee loacion
+    // 6. calcuate the distance between employee location and the bransh location in oreder to cehck it less than 100
+
+    // .1
     final shiftcurrentDay = await getShiftsData(currentUser!.uid);
+    shiftcurrentDay == null ?  throw Exception('No scedual shift found for you, please contact your HR!') : print('');
     this.weekSchedual = shiftcurrentDay!;
     this.weekSchedual['shifts'].remove('bransh');
+
+    // 2.
     this.currentBranshName = getBranchForCurrentDay(shiftcurrentDay!);
+
+    // 3.
     final allLocaion = await fetchBranshesLocations();
-    print("debug <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< $currentBranshName");
 
-    //fixing the no bransh name
-
+    // .4
     try {
       this.currentBranshLocaion = allLocaion
           .firstWhere((location) => location['title'] == this.currentBranshName);
@@ -555,8 +579,10 @@ class _attendenceScreenState extends State<attendenceScreen>
           .firstWhere((location) => location['title'] == "Defalt");
     }
 
+    // .5
     this.empoyeeLocaion = await _determinePositionfff();
 
+    // .6
     this.distance = calculateDistance(
         this.empoyeeLocaion.latitude,
         this.empoyeeLocaion.longitude,
