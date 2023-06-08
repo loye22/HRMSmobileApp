@@ -20,5 +20,12 @@ class AppColors {
     color: Colors.grey.shade200.withOpacity(0.25),
   );
 
+
+
+
+
+
+
+
 // Add more color constants as needed
 }
