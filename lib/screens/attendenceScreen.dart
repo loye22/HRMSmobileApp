@@ -19,7 +19,6 @@ import 'package:mobilehrmss/screens/splashScreen.dart';
 import 'package:random_string/random_string.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/AppColors.dart';
-import '../test/camerratest.dart';
 import '../widgets/background2.dart';
 import '../widgets/distanceInfo.dart';
 

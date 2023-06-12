@@ -1,6 +1,8 @@
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobilehrmss/screens/profileScreen.dart';
+import 'package:mobilehrmss/screens/requsitsScreen.dart';
 import 'package:mobilehrmss/widgets/background2.dart';
 import 'package:mobilehrmss/widgets/button2.dart';
 
@@ -38,6 +40,12 @@ class _homeScreenState extends State<homeScreen> {
         onTap: _handleIndexChanged,
         // dotIndicatorColor: Colors.black,
         items: [
+          DotNavigationBarItem(
+            icon: Icon(Icons.arrow_back_ios_rounded),
+            selectedColor: Colors.purple,
+          ),
+
+
           /// Home
           DotNavigationBarItem(
             icon: Icon(Icons.home),
@@ -45,18 +53,16 @@ class _homeScreenState extends State<homeScreen> {
           ),
 
           /// Search
-          DotNavigationBarItem(
-            icon: Icon(Icons.person),
-            selectedColor: Colors.orange,
-          ),
 
+
+
+          DotNavigationBarItem(
+            icon: Icon(Icons.settings),
+            selectedColor: Colors.teal,
+          ),
           /// Profile
           DotNavigationBarItem(
             icon: Icon(Icons.notifications_none_sharp),
-            selectedColor: Colors.teal,
-          ),
-          DotNavigationBarItem(
-            icon: Icon(Icons.settings),
             selectedColor: Colors.teal,
           ),
 
@@ -83,6 +89,7 @@ class _homeScreenState extends State<homeScreen> {
                   .of(context)
                   .size
                   .width - 50,
+
               child: Column(
                 children: [
                   Row(
@@ -105,8 +112,11 @@ class _homeScreenState extends State<homeScreen> {
                         height: buttonHeidth,
                         child: Button(
                             icon: Icons.person_outline,
-                            onPress: () {},
-                            txt: 'Profile ',
+                            onPress: () {
+                              print('object');
+                              Navigator.of(context).pushNamed(profileScreen.routeName);
+                            },
+                            txt: 'Profile',
                             isSelected: true),
                       )
                     ],
@@ -120,7 +130,9 @@ class _homeScreenState extends State<homeScreen> {
                         height: buttonHeidth,
                         child: Button(
                             icon: Icons.sync_alt,
-                            onPress: () {},
+                            onPress: () {
+                              Navigator.of(context).pushNamed(requsitsScreen.routeName);
+                            },
                             txt: 'Request  ',
                             isSelected: true),
                       ),
@@ -128,11 +140,12 @@ class _homeScreenState extends State<homeScreen> {
                         width: buttonWidth,
                         height: buttonHeidth,
                         child: Button(
-                            icon: Icons.person_outline,
+                            icon: Icons.report_gmailerrorred,
                             onPress: () {},
-                            txt: 'Profile ',
+                            txt: 'Attenddance reports  ',
                             isSelected: true),
-                      )
+                      ),
+
                     ],
                   ) ,
                   SizedBox(height: 20,),
@@ -163,15 +176,7 @@ class _homeScreenState extends State<homeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        width: buttonWidth,
-                        height: buttonHeidth,
-                        child: Button(
-                            icon: Icons.report_gmailerrorred,
-                            onPress: () {},
-                            txt: 'Attenddance reports  ',
-                            isSelected: true),
-                      ),
+
 
                     ],
                   )

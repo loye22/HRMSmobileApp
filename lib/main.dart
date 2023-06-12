@@ -5,8 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobilehrmss/screens/attendenceScreen.dart';
 import 'package:mobilehrmss/screens/errorScreen.dart';
 import 'package:mobilehrmss/screens/homeScreen.dart';
+import 'package:mobilehrmss/screens/profileScreen.dart';
+import 'package:mobilehrmss/screens/requsitsScreen.dart';
 import 'package:mobilehrmss/screens/splashScreen.dart';
 import 'package:mobilehrmss/screens/loginPage.dart';
+import 'package:provider/provider.dart';
 import 'models/AppColors.dart';
 
 Future<void> main() async {
@@ -38,6 +41,8 @@ class MyApp extends StatelessWidget {
             splashScreen.routeName: (ctx) => splashScreen(),
             loginPage.routeName: (ctx) => loginPage(),
             attendenceScreen.routeName: (ctx) => attendenceScreen(),
+            profileScreen.routeName: (ctx) => profileScreen(),
+            requsitsScreen.routeName: (ctx) => requsitsScreen(),
 
     },
     );
