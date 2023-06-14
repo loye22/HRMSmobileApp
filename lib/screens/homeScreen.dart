@@ -2,9 +2,12 @@ import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobilehrmss/screens/profileScreen.dart';
+import 'package:mobilehrmss/screens/requestReportsScreen.dart';
 import 'package:mobilehrmss/screens/requsitsScreen.dart';
+import 'package:mobilehrmss/screens/workExpensesScreen.dart';
 import 'package:mobilehrmss/widgets/background2.dart';
 import 'package:mobilehrmss/widgets/button2.dart';
+import 'package:mobilehrmss/widgets/customNavigationBar.dart';
 
 import '../models/AppColors.dart';
 import 'attendenceScreen.dart';
@@ -35,39 +38,7 @@ class _homeScreenState extends State<homeScreen> {
 
     return Scaffold(
       extendBody: true,
-      bottomNavigationBar: DotNavigationBar(
-        currentIndex: _SelectedTab.values.indexOf(_selectedTab),
-        onTap: _handleIndexChanged,
-        // dotIndicatorColor: Colors.black,
-        items: [
-          DotNavigationBarItem(
-            icon: Icon(Icons.arrow_back_ios_rounded),
-            selectedColor: Colors.purple,
-          ),
-
-
-          /// Home
-          DotNavigationBarItem(
-            icon: Icon(Icons.home),
-            selectedColor: Colors.purple,
-          ),
-
-          /// Search
-
-
-
-          DotNavigationBarItem(
-            icon: Icon(Icons.settings),
-            selectedColor: Colors.teal,
-          ),
-          /// Profile
-          DotNavigationBarItem(
-            icon: Icon(Icons.notifications_none_sharp),
-            selectedColor: Colors.teal,
-          ),
-
-        ],
-      ),
+      bottomNavigationBar:customNavigationBar(currentIndex: 1, ctx: context)  ,
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -157,7 +128,9 @@ class _homeScreenState extends State<homeScreen> {
                         height: buttonHeidth,
                         child: Button(
                             icon: Icons.currency_exchange,
-                            onPress: () {},
+                            onPress: () {
+                              Navigator.of(context).pushNamed(workExpensesScreen.routeName);
+                            },
                             txt: 'Work expenses',
                             isSelected: true),
                       ),
@@ -165,9 +138,11 @@ class _homeScreenState extends State<homeScreen> {
                         width: buttonWidth,
                         height: buttonHeidth,
                         child: Button(
-                            icon: Icons.document_scanner,
-                            onPress: () {},
-                            txt: 'My documents ',
+                            icon: Icons.report_rounded,
+                            onPress: () {
+                              Navigator.of(context).pushNamed(requestReportsScreen.routeName);
+                            },
+                            txt: 'Request reports',
                             isSelected: true),
                       )
                     ],

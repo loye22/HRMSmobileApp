@@ -78,18 +78,33 @@ class _attendenceScreenState extends State<attendenceScreen>
               print(snapShot.error);
               return Center(
                   child: Stack(
-                    children: [
-                      Container(
-                        decoration: AppColors.decoration,
-                      ),
-                      Container(
+                children: [
+                  Container(
+                    decoration: AppColors.decoration,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200.withOpacity(0.25),
+                    ),
+                  ),
+                  Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 50,
+                        height: MediaQuery.of(context).size.height - 550,
+
                         decoration: BoxDecoration(
                           color: Colors.grey.shade200.withOpacity(0.25),
+                          borderRadius: BorderRadius.circular(30)
                         ),
-                      ),
-                      Center(child: Text(snapShot.error.toString() , style: TextStyle(color: Colors.white , fontSize: 24 ),)),
-                    ],
-                  ));
+                        child: Center(
+                          child: Text(
+                    snapShot.error.toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                        ),
+                      )),
+                ],
+              ));
             } else {
               return Stack(
                 alignment: Alignment.center,
@@ -257,248 +272,251 @@ class _attendenceScreenState extends State<attendenceScreen>
                                       child: Column(
                                         children: [
                                           FutureBuilder(
-                                            future: SharedPreferences.getInstance(),
-                                            builder:
-                                                (ctx, f) =>
-                                                    f.connectionState ==
-                                                            ConnectionState.waiting
-                                                        ? Center(
-                                                            child:
-                                                                CircularProgressIndicator(),
-                                                          )
-                                                        : StatefulBuilder(
-                                                            builder: (BuildContext
-                                                                        context,
-                                                                    StateSetter
-                                                                        setState) =>
-                                                                isLoading
-                                                                    ? Center(
-                                                                        child:
-                                                                            CircularProgressIndicator(),
-                                                                      )
-                                                                    : Column(
-                                                                        children: [
-                                                                          // if the shared pref is null ==> display check in button
-                                                                          // disply the CheckOut button otherwise
-                                                                          f.data!.getString('key') ==
-                                                                                  null
-                                                                              ?
-                                                                              // check in button
-                                                                              GestureDetector(
-                                                                                  onTap: () async {
-                                                                                    // check in Algo
-                                                                                    // 1. check the internet coneection if false return
-                                                                                    // 2. Take photo for the emplyee if flase return
-                                                                                    // 3. Upload the check in record to the attendence collection
-                                                                                    // 4. create sharedPref named DocId which ref to the reocrd attendince ID so we
-                                                                                    // can use it to check out
+                                            future:
+                                                SharedPreferences.getInstance(),
+                                            builder: (ctx, f) =>
+                                                f.connectionState ==
+                                                        ConnectionState.waiting
+                                                    ? Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      )
+                                                    : StatefulBuilder(
+                                                        builder: (BuildContext
+                                                                    context,
+                                                                StateSetter
+                                                                    setState) =>
+                                                            isLoading
+                                                                ? Center(
+                                                                    child:
+                                                                        CircularProgressIndicator(),
+                                                                  )
+                                                                : Column(
+                                                                    children: [
+                                                                      // if the shared pref is null ==> display check in button
+                                                                      // disply the CheckOut button otherwise
+                                                                      f.data!.getString('key') ==
+                                                                              null
+                                                                          ?
+                                                                          // check in button
+                                                                          GestureDetector(
+                                                                              onTap: () async {
+                                                                                // check in Algo
+                                                                                // 1. check the internet coneection if false return
+                                                                                // 2. Take photo for the emplyee if flase return
+                                                                                // 3. Upload the check in record to the attendence collection
+                                                                                // 4. create sharedPref named DocId which ref to the reocrd attendince ID so we
+                                                                                // can use it to check out
 
-                                                                                    try {
-                                                                                      this.isLoading = true;
-                                                                                      setState(() {});
+                                                                                try {
+                                                                                  this.isLoading = true;
+                                                                                  setState(() {});
 
-                                                                                      //1.
-                                                                                      bool connectionStatus = await InternetConnectionChecker().hasConnection;
-                                                                                      if (!connectionStatus) {
-                                                                                        MyDialog.showAlert(context, 'Plase check you connection and try again !');
-                                                                                        isLoading = false;
-                                                                                        setState(() {});
-                                                                                        return;
-                                                                                      }
+                                                                                  //1.
+                                                                                  bool connectionStatus = await InternetConnectionChecker().hasConnection;
+                                                                                  if (!connectionStatus) {
+                                                                                    MyDialog.showAlert(context, 'Plase check you connection and try again !');
+                                                                                    isLoading = false;
+                                                                                    setState(() {});
+                                                                                    return;
+                                                                                  }
 
-                                                                                      //2.
-                                                                                      XFile? image = await captureSelfie(context);
-                                                                                      if (image == null) {
-                                                                                        MyDialog.showAlert(context, "It is essential to inspect the photo.");
-                                                                                        isLoading = false;
-                                                                                        setState(() {});
-                                                                                        return;
-                                                                                      }
+                                                                                  //2.
+                                                                                  XFile? image = await captureSelfie(context);
+                                                                                  if (image == null) {
+                                                                                    MyDialog.showAlert(context, "It is essential to inspect the photo.");
+                                                                                    isLoading = false;
+                                                                                    setState(() {});
+                                                                                    return;
+                                                                                  }
 
-                                                                                      // uploading the photo firebase
-                                                                                      FirebaseStorage storage = FirebaseStorage.instance;
-                                                                                      // Create a unique filename for the image using the current timestamp
-                                                                                      String fileName = DateTime.now().millisecondsSinceEpoch.toString() + "_" + randomAlphaNumeric(8).toString();
-                                                                                      // Specify the folder path in Firebase Storage
-                                                                                      String folderPath = 'attendance';
-                                                                                      // Upload the file to Firebase Storage in the specified folder
-                                                                                      TaskSnapshot snapshot = await storage.ref().child('$folderPath/$fileName').putFile(File(image.path));
-                                                                                      // Get the download URL of the uploaded image
-                                                                                      String downloadUrl = await snapshot.ref.getDownloadURL();
+                                                                                  // uploading the photo firebase
+                                                                                  FirebaseStorage storage = FirebaseStorage.instance;
+                                                                                  // Create a unique filename for the image using the current timestamp
+                                                                                  String fileName = DateTime.now().millisecondsSinceEpoch.toString() + "_" + randomAlphaNumeric(8).toString();
+                                                                                  // Specify the folder path in Firebase Storage
+                                                                                  String folderPath = 'attendance';
+                                                                                  // Upload the file to Firebase Storage in the specified folder
+                                                                                  TaskSnapshot snapshot = await storage.ref().child('$folderPath/$fileName').putFile(File(image.path));
+                                                                                  // Get the download URL of the uploaded image
+                                                                                  String downloadUrl = await snapshot.ref.getDownloadURL();
 
-                                                                                      //uploading the the check in data to firebase attendice collection
-                                                                                      FirebaseFirestore firestore = FirebaseFirestore.instance;
-                                                                                      // Define a Firestore collection reference
-                                                                                      CollectionReference attendanceCollection = firestore.collection('attendance');
-                                                                                      // Create a document with a unique ID
-                                                                                      DocumentReference documentRef = attendanceCollection.doc();
+                                                                                  //uploading the the check in data to firebase attendice collection
+                                                                                  FirebaseFirestore firestore = FirebaseFirestore.instance;
+                                                                                  // Define a Firestore collection reference
+                                                                                  CollectionReference attendanceCollection = firestore.collection('attendance');
+                                                                                  // Create a document with a unique ID
+                                                                                  DocumentReference documentRef = attendanceCollection.doc();
 
-                                                                                      await documentRef.set({
-                                                                                        'uid': FirebaseAuth.instance.currentUser!.uid,
-                                                                                        'email': FirebaseAuth.instance.currentUser!.email,
-                                                                                        'BranshName': this.currentBranshName,
-                                                                                        'checkInTimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                                        'checkInLat': this.empoyeeLocaion.latitude.toString(),
-                                                                                        'checkInLong': this.empoyeeLocaion.longitude.toString(),
-                                                                                        'checkInIsHeIn': (this.distance <= 15).toString(),
-                                                                                        'checkInPhoto': downloadUrl,
-                                                                                        'checkOutTimeStamp': "",
-                                                                                        'checkOutLat': "",
-                                                                                        'checkOutLong': "",
-                                                                                        'checkOutIsHeIn': "",
-                                                                                        'checkOutPhoto': "",
-                                                                                      });
+                                                                                  await documentRef.set({
+                                                                                    'uid': FirebaseAuth.instance.currentUser!.uid,
+                                                                                    'email': FirebaseAuth.instance.currentUser!.email,
+                                                                                    'BranshName': this.currentBranshName,
+                                                                                    'checkInTimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                    'checkInLat': this.empoyeeLocaion.latitude.toString(),
+                                                                                    'checkInLong': this.empoyeeLocaion.longitude.toString(),
+                                                                                    'checkInIsHeIn': (this.distance <= 15).toString(),
+                                                                                    'checkInPhoto': downloadUrl,
+                                                                                    'checkOutTimeStamp': "",
+                                                                                    'checkOutLat': "",
+                                                                                    'checkOutLong': "",
+                                                                                    'checkOutIsHeIn': "",
+                                                                                    'checkOutPhoto': "",
+                                                                                  });
 
-                                                                                      // 4.
-                                                                                      MyDialog.showAlert(context, 'Check-in successful');
-                                                                                      await f.data!.setString('key', documentRef.id);
-                                                                                      this.isLoading = false;
-                                                                                      setState(() {});
-                                                                                    } catch (e) {
-                                                                                      print(e);
-                                                                                      MyDialog.showAlert(context, e.toString());
-                                                                                    }
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    width: 70,
-                                                                                    height: 50,
-                                                                                    decoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(30),
-                                                                                      color: Colors.greenAccent,
-                                                                                    ),
-                                                                                    child: Center(
-                                                                                        child: Text(
-                                                                                      'check in ',
-                                                                                      style: TextStyle(color: Colors.white, fontSize: 14),
-                                                                                    )),
-                                                                                  ),
-                                                                                )
-                                                                              :
-                                                                              //check out button
-                                                                              GestureDetector(
-                                                                                  onTap: () async {
-                                                                                    // check Out Algo
-                                                                                    // 1. check the internet coneection if false return
-                                                                                    // 2. Take photo for the emplyee if flase return
-                                                                                    // 3. get the doc Id from the sharedPrefernces
-                                                                                    // 4. UPDATE!!!!  the check in detales record in the attendence collection
-                                                                                    // 5. remove the shared
-                                                                                    try {
-                                                                                      this.isLoading = true;
-                                                                                      setState(() {});
-
-                                                                                      //1.
-                                                                                      bool connectionStatus = await InternetConnectionChecker().hasConnection;
-                                                                                      if (!connectionStatus) {
-                                                                                        MyDialog.showAlert(context, 'Plase check you connection and try again !');
-                                                                                        isLoading = false;
-                                                                                        setState(() {});
-                                                                                        return;
-                                                                                      }
-
-                                                                                      //2.
-                                                                                      XFile? image = await captureSelfie(context);
-                                                                                      if (image == null) {
-                                                                                        MyDialog.showAlert(context, "It is essential to inspect the photo in Check out.");
-                                                                                        isLoading = false;
-                                                                                        setState(() {});
-                                                                                        return;
-                                                                                      }
-
-                                                                                      // uploading the photo firebase
-                                                                                      FirebaseStorage storage = FirebaseStorage.instance;
-                                                                                      // Create a unique filename for the image using the current timestamp
-                                                                                      String fileName = DateTime.now().millisecondsSinceEpoch.toString() + "_" + randomAlphaNumeric(8).toString();
-                                                                                      // Specify the folder path in Firebase Storage
-                                                                                      String folderPath = 'attendance';
-                                                                                      // Upload the file to Firebase Storage in the specified folder
-                                                                                      TaskSnapshot snapshot = await storage.ref().child('$folderPath/$fileName').putFile(File(image.path));
-                                                                                      // Get the download URL of the uploaded image
-                                                                                      String downloadUrl = await snapshot.ref.getDownloadURL();
-                                                                                      String? docId = f.data!.getString('key');
-                                                                                      Position checkOutPostion = await _determinePositionfff();
-
-                                                                                      // Define the document reference
-                                                                                      FirebaseFirestore firestore = FirebaseFirestore.instance;
-                                                                                      DocumentReference documentRef = firestore.collection('attendance').doc(docId);
-
-                                                                                      // Update the specific fields
-                                                                                      await documentRef.update({
-                                                                                        'checkOutTimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                                        'checkOutLat': checkOutPostion.latitude.toString(),
-                                                                                        'checkOutLong': checkOutPostion.longitude.toString(),
-                                                                                        'checkOutIsHeIn': (this.calculateDistance(checkOutPostion.latitude, checkOutPostion.longitude, double.parse(this.currentBranshLocaion!['latitude']), double.parse(this.currentBranshLocaion!['longitude'])) <= 100 ? true : false).toString(),
-                                                                                        'checkOutPhoto': downloadUrl,
-                                                                                      });
-
-                                                                                      //5.
-                                                                                      await f.data!.remove('key');
-                                                                                      isLoading = false;
-                                                                                      setState(() {});
-                                                                                    } catch (e) {
-                                                                                      print(e);
-                                                                                      MyDialog.showAlert(context, e.toString());
-                                                                                    }
-
-                                                                                    // await f.data!.remove('key');
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    width: 70,
-                                                                                    height: 50,
-                                                                                    decoration: BoxDecoration(
-                                                                                      borderRadius: BorderRadius.circular(30),
-                                                                                      color: Colors.greenAccent,
-                                                                                    ),
-                                                                                    child: Center(
-                                                                                        child: Text(
-                                                                                      'check out  ',
-                                                                                      style: TextStyle(color: Colors.white, fontSize: 14),
-                                                                                    )),
-                                                                                  ),
+                                                                                  // 4.
+                                                                                  MyDialog.showAlert(context, 'Check-in successful');
+                                                                                  await f.data!.setString('key', documentRef.id);
+                                                                                  this.isLoading = false;
+                                                                                  setState(() {});
+                                                                                } catch (e) {
+                                                                                  print(e);
+                                                                                  MyDialog.showAlert(context, e.toString());
+                                                                                }
+                                                                              },
+                                                                              child: Container(
+                                                                                width: 100,
+                                                                                height: 50,
+                                                                                decoration: BoxDecoration(
+                                                                                  borderRadius: BorderRadius.circular(30),
+                                                                                  color: Colors.greenAccent,
                                                                                 ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                10,
-                                                                          ),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.all(12.0),
+                                                                                  child: Center(
+                                                                                      child: Text(
+                                                                                    'check in ',
+                                                                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                                                                  )),
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          :
+                                                                          //check out button
+                                                                          GestureDetector(
+                                                                              onTap: () async {
+                                                                                // check Out Algo
+                                                                                // 1. check the internet coneection if false return
+                                                                                // 2. Take photo for the emplyee if flase return
+                                                                                // 3. get the doc Id from the sharedPrefernces
+                                                                                // 4. UPDATE!!!!  the check in detales record in the attendence collection
+                                                                                // 5. remove the shared
+                                                                                try {
+                                                                                  this.isLoading = true;
+                                                                                  setState(() {});
 
-                                                                        ],
-                                                                      )),
+                                                                                  //1.
+                                                                                  bool connectionStatus = await InternetConnectionChecker().hasConnection;
+                                                                                  if (!connectionStatus) {
+                                                                                    MyDialog.showAlert(context, 'Plase check you connection and try again !');
+                                                                                    isLoading = false;
+                                                                                    setState(() {});
+                                                                                    return;
+                                                                                  }
+
+                                                                                  //2.
+                                                                                  XFile? image = await captureSelfie(context);
+                                                                                  if (image == null) {
+                                                                                    MyDialog.showAlert(context, "It is essential to inspect the photo in Check out.");
+                                                                                    isLoading = false;
+                                                                                    setState(() {});
+                                                                                    return;
+                                                                                  }
+
+                                                                                  // uploading the photo firebase
+                                                                                  FirebaseStorage storage = FirebaseStorage.instance;
+                                                                                  // Create a unique filename for the image using the current timestamp
+                                                                                  String fileName = DateTime.now().millisecondsSinceEpoch.toString() + "_" + randomAlphaNumeric(8).toString();
+                                                                                  // Specify the folder path in Firebase Storage
+                                                                                  String folderPath = 'attendance';
+                                                                                  // Upload the file to Firebase Storage in the specified folder
+                                                                                  TaskSnapshot snapshot = await storage.ref().child('$folderPath/$fileName').putFile(File(image.path));
+                                                                                  // Get the download URL of the uploaded image
+                                                                                  String downloadUrl = await snapshot.ref.getDownloadURL();
+                                                                                  String? docId = f.data!.getString('key');
+                                                                                  Position checkOutPostion = await _determinePositionfff();
+
+                                                                                  // Define the document reference
+                                                                                  FirebaseFirestore firestore = FirebaseFirestore.instance;
+                                                                                  DocumentReference documentRef = firestore.collection('attendance').doc(docId);
+
+                                                                                  // Update the specific fields
+                                                                                  await documentRef.update({
+                                                                                    'checkOutTimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                    'checkOutLat': checkOutPostion.latitude.toString(),
+                                                                                    'checkOutLong': checkOutPostion.longitude.toString(),
+                                                                                    'checkOutIsHeIn': (this.calculateDistance(checkOutPostion.latitude, checkOutPostion.longitude, double.parse(this.currentBranshLocaion!['latitude']), double.parse(this.currentBranshLocaion!['longitude'])) <= 100 ? true : false).toString(),
+                                                                                    'checkOutPhoto': downloadUrl,
+                                                                                  });
+
+                                                                                  //5.
+                                                                                  await f.data!.remove('key');
+                                                                                  isLoading = false;
+                                                                                  setState(() {});
+                                                                                } catch (e) {
+                                                                                  print(e);
+                                                                                  MyDialog.showAlert(context, e.toString());
+                                                                                }
+
+                                                                                // await f.data!.remove('key');
+                                                                              },
+                                                                              child: Container(
+                                                                                width: 100,
+                                                                                height: 50,
+                                                                                decoration: BoxDecoration(
+                                                                                  borderRadius: BorderRadius.circular(30),
+                                                                                  color: Colors.greenAccent,
+                                                                                ),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.all(12.0),
+                                                                                  child: Center(
+                                                                                      child: Text(
+                                                                                    'check out  ',
+                                                                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                                                                  )),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            10,
+                                                                      ),
+                                                                    ],
+                                                                  )),
                                           ),
                                           GestureDetector(
-                                            onTap:
-                                                () async {
-                                              setState(
-                                                      () {});
+                                            onTap: () async {
+                                              setState(() {});
                                             },
-                                            child:
-                                            Container(
-                                              width:
-                                              70,
-                                              height:
-                                              50,
-                                              decoration:
-                                              BoxDecoration(
+                                            child: Container(
+                                              width: 100,
+                                              height: 50,
+                                              decoration: BoxDecoration(
                                                 borderRadius:
-                                                BorderRadius.circular(30),
-                                                color:
-                                                Colors.greenAccent,
+                                                    BorderRadius.circular(30),
+                                                color: Colors.greenAccent,
                                               ),
-                                              child: Center(
-                                                  child: Text(
-                                                    'Refresh',
-                                                    style:
-                                                    TextStyle(color: Colors.white, fontSize: 14),
-                                                  )),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(12.0),
+                                                child: Center(
+                                                    child: Text(
+                                                  'Refresh',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14),
+                                                )),
+                                              ),
                                             ),
                                           )
                                         ],
                                       ),
                                     ),
-
                                     Positioned(
                                         top: 50,
                                         child: distanceInfo(
-                                          distance: this.distance,
+                                          distance:
+                                              this.distance.roundToDouble(),
                                         ))
                                   ],
                                 ),
@@ -509,17 +527,15 @@ class _attendenceScreenState extends State<attendenceScreen>
                                   columnSpacing: 12,
                                   horizontalMargin: 12,
                                   sortColumnIndex: 0,
-
-                                  minWidth: MediaQuery.of(context).size.width - 200,
+                                  minWidth:
+                                      MediaQuery.of(context).size.width - 200,
                                   columns: [
                                     DataColumn2(
                                       label: Text('Day'),
-
                                     ),
                                     DataColumn(
                                       label: Text('Shift'),
                                     ),
-
                                   ],
                                   rows: this
                                       .weekSchedual['shifts']
@@ -533,12 +549,11 @@ class _attendenceScreenState extends State<attendenceScreen>
                                     String branch = shift.endsWith('Off')
                                         ? 'OFF'
                                         : shift.split(' ').last;
-                                    return DataRow(
-
-                                        cells: [
+                                    return DataRow(cells: [
                                       DataCell(Text(getDayName(day))),
-                                      DataCell(Text(shiftTimeRange == '' ? "off" : shiftTimeRange)),
-
+                                      DataCell(Text(shiftTimeRange == ''
+                                          ? "off"
+                                          : shiftTimeRange)),
                                     ]);
                                   }).toList(),
                                 ))
@@ -567,10 +582,12 @@ class _attendenceScreenState extends State<attendenceScreen>
 
     // .1
     final shiftcurrentDay = await getShiftsData(currentUser!.uid);
-    shiftcurrentDay == null ?  throw Exception('No scedual shift found for you, please contact your HR!') : print('');
+    shiftcurrentDay == null
+        ? throw Exception(
+            'No scedual shift found for you, please contact your HR!')
+        : print('');
     this.weekSchedual = shiftcurrentDay!;
     this.weekSchedual['shifts'].remove('bransh');
-
 
     // 2.
     this.currentBranshName = getBranchForCurrentDay(shiftcurrentDay!);
@@ -580,11 +597,11 @@ class _attendenceScreenState extends State<attendenceScreen>
 
     // .4
     try {
-      this.currentBranshLocaion = allLocaion
-          .firstWhere((location) => location['title'] == this.currentBranshName);
+      this.currentBranshLocaion = allLocaion.firstWhere(
+          (location) => location['title'] == this.currentBranshName);
     } catch (e) {
-      this.currentBranshLocaion = allLocaion
-          .firstWhere((location) => location['title'] == "Defalt");
+      this.currentBranshLocaion =
+          allLocaion.firstWhere((location) => location['title'] == "Defalt");
     }
 
     // .5

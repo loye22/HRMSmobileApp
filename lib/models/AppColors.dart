@@ -19,6 +19,7 @@ class AppColors {
    // borderRadius: BorderRadius.circular(30),
     color: Colors.grey.shade200.withOpacity(0.25),
   );
+  
 
 
 

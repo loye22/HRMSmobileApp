@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobilehrmss/main.dart';
 import 'package:mobilehrmss/models/Dialog.dart';
 import 'package:mobilehrmss/models/yesNoDialog.dart';
 import 'package:mobilehrmss/screens/homeScreen.dart';
@@ -29,6 +34,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
   Map<String, dynamic>? timeOffDetaks = {};
   DateTime? sDate = null;
   DateTime? eDate = null;
+  File? file = null;
+
+  String? fileName = null;
 
   @override
   Widget build(BuildContext context) {
@@ -77,50 +85,114 @@ class _requsitsScreenState extends State<requsitsScreen> {
       case 2:
         // 2.1 let the employee selate the start and end dates and calc the days
         // 2.2  Check if the the employee has enough days as he requisted if yes send the requsit otherwise display
-        widgetToDisplay = Container(
-          width: MediaQuery.of(context).size.width - 50,
-          height: MediaQuery.of(context).size.height - 50,
-          decoration: BoxDecoration(
-              color: Colors.grey.shade200.withOpacity(0.55),
-              borderRadius: BorderRadius.circular(30)),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                DonutChartWidget(
-                  totalDays: timeOffDetaks!["duration"] != null
-                      ? double.parse(timeOffDetaks!["duration"])
-                      : 0.0,
-                  usedDays: timeOffDetaks!["consume"] != null
-                      ? double.parse(timeOffDetaks!["consume"])
-                      : 0.0,
-                  txt: timeOffDetaks!["title"] != null
-                      ? timeOffDetaks!["title"]
-                      : "error",
-                  color: Colors.blue,
-                ),
-                Container(
-                  child: SfDateRangePicker(
-                    onSelectionChanged: _onSelectionChanged,
-                    selectionMode: DateRangePickerSelectionMode.range,
+        widgetToDisplay = StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) => Container(
+            width: MediaQuery.of(context).size.width - 50,
+            height: MediaQuery.of(context).size.height - 50,
+            decoration: BoxDecoration(
+                color: Colors.grey.shade200.withOpacity(0.55),
+                borderRadius: BorderRadius.circular(30)),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  DonutChartWidget(
+                    totalDays: timeOffDetaks!["duration"] != null
+                        ? double.parse(timeOffDetaks!["duration"])
+                        : 0.0,
+                    usedDays: timeOffDetaks!["consume"] != null
+                        ? double.parse(timeOffDetaks!["consume"])
+                        : 0.0,
+                    txt: timeOffDetaks!["title"] != null
+                        ? timeOffDetaks!["title"]
+                        : "error",
+                    color: Colors.blue,
                   ),
-                ),
-               SizedBox(height: 15,),
-               Container(
-                 width: 150,
-                 height: 50,
-                 decoration: BoxDecoration(
-                   color: AppColors.color1,
-                   borderRadius: BorderRadius.circular(30)
-                 ),
-                 child: Padding(
-                     padding: EdgeInsets.all(18),
-                     child: Row(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children: [Icon(Icons.upload,color: Colors.white,) , SizedBox(width: 10,) , Text('upload' , style: TextStyle(color: Colors.white),)])),
-               ),
-                SizedBox(height: 150,),
-
-              ],
+                  Container(
+                    child: SfDateRangePicker(
+                      onSelectionChanged: _onSelectionChanged,
+                      selectionMode: DateRangePickerSelectionMode.range,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  this.fileName != null
+                      ? Container(
+                          height: 40,
+                          width: double.infinity,
+                          //   decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(Icons.attachment),
+                                Text(this.fileName!),
+                                IconButton(
+                                    onPressed: () {
+                                      this.file = null;
+                                      this.fileName = null;
+                                      setState(() {});
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ))
+                              ],
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      try {
+                        FilePickerResult? result =
+                            await FilePicker.platform.pickFiles();
+                        if (result != null) {
+                          this.file = File(result.files.single.path!);
+                          this.fileName = result.files.single.name;
+                          setState(() {});
+                        } else {
+                          // User canceled the picker
+                        }
+                      } catch (e) {
+                        MyDialog.showAlert(context, e.toString());
+                      }
+                    },
+                    child: Container(
+                      width: 150,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: AppColors.color1,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.upload,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                    child: Text(
+                                  'Upload doc',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ))
+                              ])),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 150,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -177,8 +249,11 @@ class _requsitsScreenState extends State<requsitsScreen> {
                   children: [
                     widgetToDisplay,
                     isLoading
-                        ? Center(
-                            child: CircularProgressIndicator(),
+                        ? Positioned(
+                            bottom: 10,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           )
                         : Positioned(
                             bottom: 10,
@@ -215,25 +290,59 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                       setState(() {});
                                       break;
                                     case 2:
-                                    // 2.2  Check if the the employee has enough days as he requisted if yes send the requsit otherwise display
-                                    // you don't have enough days in your time off
-                                     if (this.eDate != null && this.sDate != null)
-                                       {
-                                         // calc how many days do the emplyee requisted
-                                         int requsitedDayes =  this.sDate!.difference(this.eDate!).inDays.abs() + 1 ;
-                                         // calc the avalable days
-                                         double avalableDays =  double.parse(timeOffDetaks!["consume"]) - double.parse(timeOffDetaks!["duration"]) ;
-                                         avalableDays = avalableDays.abs();
-                                         if(requsitedDayes <= avalableDays){
-                                           print('abbrove');
-                                           return;
-                                         }
-                                         else {
-                                          MyDialog.showAlert(context, 'The number of days off you requested exceeds the available days in your profile.') ;
-                                         }
+                                      // 2.2  Check if the the employee has enough days as he requisted if yes send the requsit otherwise display
+                                      // you don't have enough days in your time off
+                                      if (this.eDate == null ||
+                                          this.sDate == null) {
+                                        MyDialog.showAlert(context,
+                                            'Please seclect date range!');
+                                        return;
+                                      }
+                                      if (this.eDate != null &&
+                                          this.sDate != null) {
+                                        // calc how many days do the emplyee requisted
+                                        int requsitedDayes = this
+                                                .sDate!
+                                                .difference(this.eDate!)
+                                                .inDays
+                                                .abs() +
+                                            1;
+                                        // calc the avalable days
+                                        double avalableDays = double.parse(
+                                                timeOffDetaks!["consume"]) -
+                                            double.parse(
+                                                timeOffDetaks!["duration"]);
+                                        avalableDays = avalableDays.abs();
+                                        if (requsitedDayes <= avalableDays) {
+                                          isLoading = true;
+                                          setState(() {});
+                                          String url = '';
+                                          // check if there is  file to upload
+                                          if (this.file != null) {
+                                            url = await uploadPDF(this.file!);
+                                          }
 
+                                          timeOffReq(
+                                              FirebaseAuth
+                                                  .instance.currentUser!.uid,
+                                              this.requists[selectedOption]!,
+                                              this.eDate!,
+                                              this.sDate!,
+                                              url,
+                                            requsitedDayes.toString()
 
-                                       }
+                                          );
+
+                                          isLoading = false;
+                                          setState(() {});
+
+                                          return;
+                                        } else {
+                                          // the user exceed the avalable days in his profile
+                                          MyDialog.showAlert(context,
+                                              'The number of days off you requested exceeds the available days in your profile.');
+                                        }
+                                      }
 
                                       break;
                                     case 3:
@@ -345,6 +454,63 @@ class _requsitsScreenState extends State<requsitsScreen> {
     }
   }
 
+  Future<void> timeOffReq(
+    String userId,
+    String workflowId,
+      DateTime eData,
+    DateTime sDate,
+    String docUrl,
+      String ReqistedDays
+  ) async {
+    try {
+      DateTime currentDate = DateTime.now();
+      List<String> flowOrder = [];
+
+      // Create the request document data
+      Map<String, dynamic> requestData = {
+        'eId': userId,
+        'date': currentDate,
+        'title': workflowId,
+        'flow': {},
+        'status': 'pending',
+        'eData': eData,
+        'sDate': sDate,
+        'docUrl': docUrl,
+        'ReqistedDays':ReqistedDays
+      };
+
+      // Retrieve the workflow document
+      DocumentSnapshot workflowSnapshot = await FirebaseFirestore.instance
+          .collection('workflow')
+          .doc(workflowId)
+          .get();
+
+      // Check if the workflow document exists
+      if (workflowSnapshot.exists) {
+        // Retrieve the flow map from the workflow document
+        Map<String, dynamic>? flowMap =
+            workflowSnapshot.data() as Map<String, dynamic>?;
+        List<String> sortedKeys = flowMap!['flow'].keys.toList()..sort();
+        Map<String, dynamic> sortedMap = {};
+        for (var key in sortedKeys) {
+          sortedMap[key] = flowMap['flow'][key];
+        }
+
+        requestData['flow'] = sortedMap;
+
+        // Create the request document in the requests collection
+        CollectionReference requestsCollection =
+            FirebaseFirestore.instance.collection('requests');
+
+        requestsCollection.add(requestData).catchError((error) {
+          print('Failed to create request document: $error');
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<Map<String, String>> getWorkflowData() async {
     // Replace 'workflow' with the actual collection name in your Firebase Firestore
     String collectionName = 'workflow';
@@ -424,6 +590,25 @@ class _requsitsScreenState extends State<requsitsScreen> {
     this.sDate = args.value.startDate;
     this.eDate = args.value.endDate;
     print(this.sDate.toString() + " " + this.eDate.toString());
-   // print(args.value.startDate.difference(args.value.endDate).inDayes);
+    // print(args.value.startDate.difference(args.value.endDate).inDayes);
+  }
+
+  Future<String> uploadPDF(File pdfFile) async {
+    try {
+      // Create a reference to the desired storage location
+      final Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('requsitsDoc')
+          .child('${DateTime.now().millisecondsSinceEpoch}.pdf');
+      // Upload the file to Firebase Storage
+      final UploadTask uploadTask = storageReference.putFile(pdfFile);
+      final TaskSnapshot snapshot = await uploadTask.whenComplete(() {});
+      // Get the download URL of the uploaded file
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Error uploading PDF: $e');
+      return '';
+    }
   }
 }

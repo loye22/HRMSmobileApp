@@ -6,9 +6,11 @@ import 'package:mobilehrmss/screens/attendenceScreen.dart';
 import 'package:mobilehrmss/screens/errorScreen.dart';
 import 'package:mobilehrmss/screens/homeScreen.dart';
 import 'package:mobilehrmss/screens/profileScreen.dart';
+import 'package:mobilehrmss/screens/requestReportsScreen.dart';
 import 'package:mobilehrmss/screens/requsitsScreen.dart';
 import 'package:mobilehrmss/screens/splashScreen.dart';
 import 'package:mobilehrmss/screens/loginPage.dart';
+import 'package:mobilehrmss/screens/workExpensesScreen.dart';
 import 'package:provider/provider.dart';
 import 'models/AppColors.dart';
 
@@ -43,6 +45,8 @@ class MyApp extends StatelessWidget {
             attendenceScreen.routeName: (ctx) => attendenceScreen(),
             profileScreen.routeName: (ctx) => profileScreen(),
             requsitsScreen.routeName: (ctx) => requsitsScreen(),
+            requestReportsScreen.routeName: (ctx) => requestReportsScreen(),
+            workExpensesScreen.routeName: (ctx) => workExpensesScreen(),
 
     },
     );
