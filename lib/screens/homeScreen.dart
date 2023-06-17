@@ -10,6 +10,7 @@ import 'package:mobilehrmss/widgets/button2.dart';
 import 'package:mobilehrmss/widgets/customNavigationBar.dart';
 
 import '../models/AppColors.dart';
+import 'attenddanceReportsScreen.dart';
 import 'attendenceScreen.dart';
 enum _SelectedTab { home, favorite, search, person }
 class homeScreen extends StatefulWidget {
@@ -37,8 +38,6 @@ class _homeScreenState extends State<homeScreen> {
     }
 
     return Scaffold(
-      extendBody: true,
-      bottomNavigationBar:customNavigationBar(currentIndex: 1, ctx: context)  ,
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -112,7 +111,9 @@ class _homeScreenState extends State<homeScreen> {
                         height: buttonHeidth,
                         child: Button(
                             icon: Icons.report_gmailerrorred,
-                            onPress: () {},
+                            onPress: () {
+                              Navigator.of(context).pushNamed(attenddanceReportsScreen.routeName);
+                            },
                             txt: 'Attenddance reports  ',
                             isSelected: true),
                       ),

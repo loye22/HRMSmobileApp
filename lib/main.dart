@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobilehrmss/screens/attenddanceReportsScreen.dart';
 import 'package:mobilehrmss/screens/attendenceScreen.dart';
 import 'package:mobilehrmss/screens/errorScreen.dart';
 import 'package:mobilehrmss/screens/homeScreen.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
             requsitsScreen.routeName: (ctx) => requsitsScreen(),
             requestReportsScreen.routeName: (ctx) => requestReportsScreen(),
             workExpensesScreen.routeName: (ctx) => workExpensesScreen(),
+            attenddanceReportsScreen.routeName: (ctx) => attenddanceReportsScreen(),
 
     },
     );

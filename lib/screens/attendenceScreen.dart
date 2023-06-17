@@ -42,6 +42,7 @@ class _attendenceScreenState extends State<attendenceScreen>
   File? _capturedImage;
   late double distance;
   late Map<String, dynamic> weekSchedual;
+  String userName = '' ;
 
   bool isLoading = false;
 
@@ -351,6 +352,8 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   await documentRef.set({
                                                                                     'uid': FirebaseAuth.instance.currentUser!.uid,
                                                                                     'email': FirebaseAuth.instance.currentUser!.email,
+                                                                                    'name' : this.userName,
+                                                                                    'scedual' :getAttendanceDataVar,
                                                                                     'BranshName': this.currentBranshName,
                                                                                     'checkInTimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
                                                                                     'checkInLat': this.empoyeeLocaion.latitude.toString(),
@@ -362,6 +365,7 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                     'checkOutLong': "",
                                                                                     'checkOutIsHeIn': "",
                                                                                     'checkOutPhoto': "",
+
                                                                                   });
 
                                                                                   // 4.
@@ -621,7 +625,7 @@ class _attendenceScreenState extends State<attendenceScreen>
       final employeeRef = FirebaseFirestore.instance.collection('Employee');
       final employeeSnapshot = await employeeRef.doc(employeeId).get();
       if (employeeSnapshot.exists) {
-        //final email = employeeSnapshot.data()!['email'] ;
+        this.userName = employeeSnapshot.data()!['userName'] ;
         final shiftsRef = employeeSnapshot.reference.collection('shifts');
         final QuerySnapshot shiftsSnapshot = await shiftsRef
             .orderBy('timestamp', descending: true)

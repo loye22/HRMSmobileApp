@@ -18,12 +18,13 @@ class _distanceInfoState extends State<distanceInfo> {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width - 50,
-      height: 70,
+
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(30)),
       child:widget.distance <= 100 ?
       Container(
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(30) , color: Colors.greenAccent,),
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: Row(
           children: [
             SizedBox(width: 50,),
@@ -34,6 +35,7 @@ class _distanceInfoState extends State<distanceInfo> {
         ),
       )
       :  Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(30) , color: Colors.red,),
         child: Row(
           children: [
