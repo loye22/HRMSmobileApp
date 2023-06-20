@@ -367,10 +367,12 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                     'checkOutPhoto': "",
 
                                                                                   });
-
-                                                                                  // 4.
-                                                                                  MyDialog.showAlert(context, 'Check-in successful');
+                                                                                  //4.
                                                                                   await f.data!.setString('key', documentRef.id);
+
+
+                                                                                  MyDialog.showAlert(context, 'Check-in successful');
+
                                                                                   this.isLoading = false;
                                                                                   setState(() {});
                                                                                 } catch (e) {
