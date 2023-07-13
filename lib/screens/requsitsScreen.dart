@@ -335,6 +335,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
 
                                           isLoading = false;
                                           setState(() {});
+                                          AppColors.showCustomSnackbar(context, 'Your request has been sent successfully');
 
                                           return;
                                         } else {
@@ -359,8 +360,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                             this.requists[selectedOption]!);
                                         isLoading = false;
                                         setState(() {});
-                                        MyDialog.showAlert(context,
-                                            'Your request has been successfully sent.');
+                                       /* MyDialog.showAlert(context,
+                                            'Your request has been successfully sent.');*/
+                                        AppColors.showCustomSnackbar(context, 'Your request has been sent successfully');
                                       }, () {
                                         Navigator.of(context).pop();
                                       });
@@ -418,6 +420,8 @@ class _requsitsScreenState extends State<requsitsScreen> {
         'title': workflowId,
         'flow': {},
         'status': 'pending',
+        'return':false ,
+        'returnReason':''
       };
       // Retrieve the workflow document
       DocumentSnapshot workflowSnapshot = await FirebaseFirestore.instance
@@ -476,7 +480,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
         'eData': eData,
         'sDate': sDate,
         'docUrl': docUrl,
-        'ReqistedDays':ReqistedDays
+        'ReqistedDays':ReqistedDays,
+        'return':false ,
+        'returnReason':''
       };
 
       // Retrieve the workflow document

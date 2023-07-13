@@ -19,7 +19,26 @@ class AppColors {
    // borderRadius: BorderRadius.circular(30),
     color: Colors.grey.shade200.withOpacity(0.25),
   );
-  
+  static void showCustomSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'Close',
+          onPressed: () {
+            // Perform some action when the user taps on the action button
+          },
+        ),
+      ),
+    );
+  }
+
+
+
+
+
+
 
 
 
@@ -30,3 +49,5 @@ class AppColors {
 
 // Add more color constants as needed
 }
+
+

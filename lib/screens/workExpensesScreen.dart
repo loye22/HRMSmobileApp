@@ -24,6 +24,7 @@ class workExpensesScreen extends StatefulWidget {
 
 class _workExpensesScreenState extends State<workExpensesScreen> {
   TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _textEditingController2 = TextEditingController();
   FilePickerResult? result = null;
 
   String filename = '';
@@ -33,6 +34,7 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
   @override
   void dispose() {
     _textEditingController.dispose();
+    _textEditingController2.dispose();
     this.result = null;
     this.filename = '';
     super.dispose();
@@ -66,6 +68,14 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                 controller: _textEditingController,
                                 decoration: InputDecoration(
                                   labelText: 'Title',
+                                ),
+                              ),
+                              SizedBox(height: 20), TextField(
+                                controller: _textEditingController2,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+
+                                  labelText: 'Amount',
                                 ),
                               ),
                               SizedBox(height: 20),
@@ -127,6 +137,12 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                                     'Please add title');
                                                 return;
                                               }
+                                              if (_textEditingController2.text ==
+                                                  '') {
+                                                MyDialog.showAlert(context,
+                                                    'Please add the amount');
+                                                return;
+                                              }
                                               if (result == null) {
                                                 MyDialog.showAlert(context,
                                                     'Please add invoice');
@@ -172,6 +188,7 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                                     .toString(),
                                                 'status': false,
                                                 'docUrl': downloadUrl,
+                                                'amount':_textEditingController2.text
                                               }).then((value) {
                                                 this.isLoading = false ;
                                                 Navigator.of(context).pop();
@@ -249,10 +266,10 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                         label: Center(child: Text('Title')),
                       ),
 
-                      DataColumn(
+                      DataColumn2(
                         label: Center(child: Text('Status')),
                       ),
-                      DataColumn(
+                      DataColumn2(
                         label: Center(child: Text('Date')),
                       ),
                     ],

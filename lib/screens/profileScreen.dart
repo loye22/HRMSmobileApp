@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobilehrmss/models/Dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/AppColors.dart';
 
@@ -58,36 +60,50 @@ class _profileScreenState extends State<profileScreen> {
                                   Container(
                                     width: double.infinity,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Column(
                                           children: [
                                             CircleAvatar(
                                               radius: 40,
-                                              backgroundImage:
-                                                  NetworkImage(snapShot.data!['photo']),
+                                              backgroundImage: NetworkImage(
+                                                  snapShot.data!['photo']),
                                             ),
-                                            SizedBox(height: 10,),
-                                            Text(snapShot.data!['userName'] ,style: TextStyle(fontSize: 24), ) ,
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              snapShot.data!['userName'],
+                                              style: TextStyle(fontSize: 24),
+                                            ),
                                             Row(
                                               children: [
-
-                                                IconButton(onPressed: () async {
-                                                  Navigator.of(context).pop();
-                                                }, icon:Icon(Icons.arrow_back_outlined )) ,
-                                                IconButton(onPressed: () async {
-                                                  try {
-                                                    await FirebaseAuth.instance.signOut();
-                                                    Navigator.of(context).pop();
-                                                    print('User logged out successfully.');
-                                                  } catch (e) {
-                                                    print('Error occurred while logging out: $e');
-                                                  }
-                                                }, icon:Icon(Icons.logout )),
-
+                                                IconButton(
+                                                    onPressed: () async {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    icon: Icon(Icons
+                                                        .arrow_back_outlined)),
+                                                IconButton(
+                                                    onPressed: () async {
+                                                      try {
+                                                        await FirebaseAuth
+                                                            .instance
+                                                            .signOut();
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        print(
+                                                            'User logged out successfully.');
+                                                      } catch (e) {
+                                                        print(
+                                                            'Error occurred while logging out: $e');
+                                                      }
+                                                    },
+                                                    icon: Icon(Icons.logout)),
                                               ],
-                                            ) ,
-
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -121,38 +137,53 @@ class _profileScreenState extends State<profileScreen> {
                                         }
                                       }),
                                   _buildPersonalInfoItem(
-                                      'Date of Birth',  DateFormat('yyyy-MM-dd').format( snapShot.data!['dob'].toDate() ?? DateTime.now()) ),
+                                      'Date of Birth',
+                                      DateFormat('yyyy-MM-dd').format(
+                                          snapShot.data!['dob'].toDate() ??
+                                              DateTime.now())),
                                   _buildPersonalInfoItem(
                                       'Email', 'employeeProfile.email'),
                                   _buildPersonalInfoItem(
                                       'Gender', 'employeeProfile.gender'),
                                   _buildPersonalInfoItem(
-                                      'Hiring Date', DateFormat('yyyy-MM-dd').format( snapShot.data!['hiringDate'].toDate() ?? DateTime.now()) ),
+                                      'Hiring Date',
+                                      DateFormat('yyyy-MM-dd').format(snapShot
+                                              .data!['hiringDate']
+                                              .toDate() ??
+                                          DateTime.now())),
                                   _buildPersonalInfoItem('Nationality',
                                       snapShot.data!['nationality']),
                                   _buildPersonalInfoItem('Phone Number',
                                       snapShot.data!['phoneNr']),
-                                  /*FutureBuilder(
-                            future: getWeekendTitle(employeeProfile.weekendId),
-                            builder: (ctx, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Center(
-                                  child: Text('Error: ${snapshot.error}'),
-                                );
-                              } else {
-                                final weekendTitle = snapshot.data;
-                                return _buildPersonalInfoItem(
-                                  'Weekends',
-                                  weekendTitle != null
-                                      ? weekendTitle
-                                      : "not Found 404 error",
-                                );
-                              }
-                            })*/
+                                  GestureDetector(
+                                    onTap:() async {
+                                      try{
+                                       SharedPreferences  sp =  await  SharedPreferences.getInstance();
+                                        await sp.remove('key');
+                                       MyDialog.showAlert(context, 'Your check in data has been reset sucesfully');
+
+                                      }
+                                      catch(e){
+                                        print('error $e');
+                                        MyDialog.showAlert(context, 'error $e');
+                                      }
+                                    },
+                                    child: Container(
+                                      width: 100,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      child: Center(
+                                          child: Text(
+                                        'Reset',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                    ),
+                                  )
                                 ],
                               );
                             }

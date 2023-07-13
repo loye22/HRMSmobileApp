@@ -371,7 +371,7 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   await f.data!.setString('key', documentRef.id);
 
 
-                                                                                  MyDialog.showAlert(context, 'Check-in successful');
+                                                                                  //MyDialog.showAlert(context, 'Check-in successful');
 
                                                                                   this.isLoading = false;
                                                                                   setState(() {});

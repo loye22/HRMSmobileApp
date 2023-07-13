@@ -37,6 +37,7 @@ class _homeScreenState extends State<homeScreen> {
       });
     }
 
+
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -112,7 +113,9 @@ class _homeScreenState extends State<homeScreen> {
                         child: Button(
                             icon: Icons.report_gmailerrorred,
                             onPress: () {
-                              Navigator.of(context).pushNamed(attenddanceReportsScreen.routeName);
+                              //Navigator.of(context).pushNamed(attenddanceReportsScreen.routeName);
+
+
                             },
                             txt: 'Attenddance reports  ',
                             isSelected: true),
@@ -164,4 +167,5 @@ class _homeScreenState extends State<homeScreen> {
       ),
     );
   }
+
 }
