@@ -42,7 +42,7 @@ class _attendenceScreenState extends State<attendenceScreen>
   File? _capturedImage;
   late double distance;
   late Map<String, dynamic> weekSchedual;
-  String userName = '' ;
+  String userName = '';
 
   bool isLoading = false;
 
@@ -54,7 +54,26 @@ class _attendenceScreenState extends State<attendenceScreen>
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
+        floatingActionButton: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+                color: Colors.lightBlueAccent,
+                borderRadius: BorderRadius.circular(30)),
+            child: Center(
+                child: Icon(
+                  Icons.keyboard_backspace_outlined,
+                  color: Colors.white,
+                )),
+          ),
+        ),
       body: FutureBuilder(
           future: initt(),
           builder: (ctx, snapShot) {
@@ -90,20 +109,18 @@ class _attendenceScreenState extends State<attendenceScreen>
                   ),
                   Center(
                       child: Container(
-                        width: MediaQuery.of(context).size.width - 50,
-                        height: MediaQuery.of(context).size.height - 550,
-
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200.withOpacity(0.25),
-                          borderRadius: BorderRadius.circular(30)
-                        ),
-                        child: Center(
-                          child: Text(
-                    snapShot.error.toString(),
-                    style: TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                        ),
-                      )),
+                    width: MediaQuery.of(context).size.width - 50,
+                    height: MediaQuery.of(context).size.height - 550,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Center(
+                      child: Text(
+                        snapShot.error.toString(),
+                        style: TextStyle(color: Colors.white, fontSize: 24),
+                      ),
+                    ),
+                  )),
                 ],
               ));
             } else {
@@ -317,6 +334,8 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   bool connectionStatus = await InternetConnectionChecker().hasConnection;
                                                                                   if (!connectionStatus) {
                                                                                     MyDialog.showAlert(context, 'Plase check you connection and try again !');
+                                                                                    print( 'Plase check you connection and try again !');
+                                                                                  //  AppColors.showCustomSnackbar(context,'Plase check you connection and try again !' );
                                                                                     isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
@@ -326,6 +345,8 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   XFile? image = await captureSelfie(context);
                                                                                   if (image == null) {
                                                                                     MyDialog.showAlert(context, "It is essential to inspect the photo.");
+                                                                                    print("It is essential to inspect the photo.");
+                                                                                   // AppColors.showCustomSnackbar(context, "It is essential to inspect the photo.");
                                                                                     isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
@@ -352,8 +373,8 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   await documentRef.set({
                                                                                     'uid': FirebaseAuth.instance.currentUser!.uid,
                                                                                     'email': FirebaseAuth.instance.currentUser!.email,
-                                                                                    'name' : this.userName,
-                                                                                    'scedual' :getAttendanceDataVar,
+                                                                                    'name': this.userName,
+                                                                                    'scedual': getAttendanceDataVar,
                                                                                     'BranshName': this.currentBranshName,
                                                                                     'checkInTimeStamp': DateTime.now().millisecondsSinceEpoch.toString(),
                                                                                     'checkInLat': this.empoyeeLocaion.latitude.toString(),
@@ -365,19 +386,22 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                     'checkOutLong': "",
                                                                                     'checkOutIsHeIn': "",
                                                                                     'checkOutPhoto': "",
-
                                                                                   });
                                                                                   //4.
                                                                                   await f.data!.setString('key', documentRef.id);
-
+                                                                                  AppColors.showCustomSnackbar(
+                                                                                    context,'Check-in successful' );
+                                                                                //  Navigator.of(context).pop();
 
                                                                                   //MyDialog.showAlert(context, 'Check-in successful');
+                                                                                  AppColors.showCustomSnackbar(context,  'Check-in successful');
 
                                                                                   this.isLoading = false;
                                                                                   setState(() {});
                                                                                 } catch (e) {
                                                                                   print(e);
-                                                                                  MyDialog.showAlert(context, e.toString());
+                                                                                  //MyDialog.showAlert(context, e.toString());
+                                                                                  AppColors.showCustomSnackbar(context, 'error ${e.toString()}');
                                                                                 }
                                                                               },
                                                                               child: Container(
@@ -415,6 +439,8 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   bool connectionStatus = await InternetConnectionChecker().hasConnection;
                                                                                   if (!connectionStatus) {
                                                                                     MyDialog.showAlert(context, 'Plase check you connection and try again !');
+                                                                                    print('Plase check you connection and try again !');
+                                                                                   // AppColors.showCustomSnackbar(context,'Plase check you connection and try again !' );
                                                                                     isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
@@ -424,6 +450,9 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   XFile? image = await captureSelfie(context);
                                                                                   if (image == null) {
                                                                                     MyDialog.showAlert(context, "It is essential to inspect the photo in Check out.");
+                                                                                    print("It is essential to inspect the photo in Check out.");
+                                                                                   /* AppColors.showCustomSnackbar(
+                                                                                        context,"It is essential to inspect the photo in Check out." );*/
                                                                                     isLoading = false;
                                                                                     setState(() {});
                                                                                     return;
@@ -459,9 +488,13 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   await f.data!.remove('key');
                                                                                   isLoading = false;
                                                                                   setState(() {});
+                                                                                  AppColors.showCustomSnackbar(
+                                                                                      context,'Check-out successful' );
                                                                                 } catch (e) {
                                                                                   print(e);
-                                                                                  MyDialog.showAlert(context, e.toString());
+                                                                              //    MyDialog.showAlert(context, e.toString());
+                                                                                  AppColors.showCustomSnackbar(
+                                                                                      context,'Error: ${e.toString()}' );
                                                                                 }
 
                                                                                 // await f.data!.remove('key');
@@ -622,12 +655,49 @@ class _attendenceScreenState extends State<attendenceScreen>
     // loding the employee locaion detals
   }
 
+
+  show(BuildContext context){
+    var dialog = Dialog(
+      child: Container(
+        margin: EdgeInsets.all(8.0),
+        child: Form(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextFormField(
+                decoration: InputDecoration(
+                    labelText: "Insira o número de telefone",
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(2.0)))),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Cancelar")),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Aceitar"))
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );}
+
+
   Future<Map<String, dynamic>?> getShiftsData(String employeeId) async {
     try {
       final employeeRef = FirebaseFirestore.instance.collection('Employee');
       final employeeSnapshot = await employeeRef.doc(employeeId).get();
       if (employeeSnapshot.exists) {
-        this.userName = employeeSnapshot.data()!['userName'] ;
+        this.userName = employeeSnapshot.data()!['userName'];
         final shiftsRef = employeeSnapshot.reference.collection('shifts');
         final QuerySnapshot shiftsSnapshot = await shiftsRef
             .orderBy('timestamp', descending: true)
