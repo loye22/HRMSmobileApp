@@ -23,12 +23,13 @@ class homeScreen extends StatefulWidget {
 }
 
 class _homeScreenState extends State<homeScreen> {
-  double buttonWidth = 170;
-  double buttonHeidth = 70;
+
 
 
   @override
   Widget build(BuildContext context) {
+    double buttonWidth = MediaQuery.of(context).size.width / 2.4 ;
+    double buttonHeidth = MediaQuery.of(context).size.height / 8 ;// 70;
     var _selectedTab = _SelectedTab.home;
 
     void _handleIndexChanged(int i) {

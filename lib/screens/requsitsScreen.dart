@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobilehrmss/main.dart';
 import 'package:mobilehrmss/models/Dialog.dart';
 import 'package:mobilehrmss/models/yesNoDialog.dart';
@@ -35,7 +36,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
   DateTime? sDate = null;
   DateTime? eDate = null;
   File? file = null;
-
+  final TextEditingController _textEditingController = TextEditingController();
   String? fileName = null;
 
   @override
@@ -44,13 +45,14 @@ class _requsitsScreenState extends State<requsitsScreen> {
     switch (counter) {
       case 1:
         // first screen
-        widgetToDisplay = Container(
-            width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height - 80,
-            decoration: BoxDecoration(
-                color: Colors.grey.shade200.withOpacity(0.55),
-                borderRadius: BorderRadius.circular(30)),
-            child: SingleChildScrollView(
+        widgetToDisplay = LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          return Container(
+              width: constraints.maxWidth - 50,
+              height: constraints.maxHeight - 80,
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade200.withOpacity(0.55),
+                  borderRadius: BorderRadius.circular(30)),
               child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SingleChildScrollView(
@@ -79,16 +81,17 @@ class _requsitsScreenState extends State<requsitsScreen> {
                         ],
                       ),
                     ),
-                  )),
-            ));
+                  )));
+        });
         break;
       case 2:
         // 2.1 let the employee selate the start and end dates and calc the days
         // 2.2  Check if the the employee has enough days as he requisted if yes send the requsit otherwise display
-        widgetToDisplay = StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) => Container(
-            width: MediaQuery.of(context).size.width - 50,
-            height: MediaQuery.of(context).size.height - 50,
+        widgetToDisplay = LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) =>
+              Container(
+            width: constraints.maxWidth - 50,
+            height: constraints.maxHeight - 80,
             decoration: BoxDecoration(
                 color: Colors.grey.shade200.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(30)),
@@ -189,24 +192,86 @@ class _requsitsScreenState extends State<requsitsScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 150,
+                    height: 10,
                   ),
+                  Text('Type your requist reason here',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Animate(
+                    effects: [FadeEffect(), ScaleEffect()],
+                    child: Container(
+                      width: 300,
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      ),
+                      child: TextFormField(
+                        maxLines: null,
+                        controller: _textEditingController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Type here',
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 150,)
+
                 ],
               ),
             ),
           ),
         );
+
         break;
       case 3:
-        widgetToDisplay = Container(
-          width: MediaQuery.of(context).size.width - 50,
-          height: MediaQuery.of(context).size.height - 80,
-          decoration: BoxDecoration(
-              color: Colors.grey.shade200.withOpacity(0.55),
-              borderRadius: BorderRadius.circular(30)),
-          child: Center(
-            child: Text(selectedOption,
-                style: TextStyle(color: Colors.white, fontSize: 18)),
+        // to handel non-time off requists
+        widgetToDisplay = LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) =>
+              Container(
+            width: constraints.maxWidth - 50,
+            height: constraints.maxHeight - 80,
+            decoration: BoxDecoration(
+                color: Colors.grey.shade200.withOpacity(0.55),
+                borderRadius: BorderRadius.circular(30)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Type your requist reason here',
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold)),
+                SizedBox(
+                  height: 20,
+                ),
+                Animate(
+                  effects: [FadeEffect(), ScaleEffect()],
+                  child: Container(
+                    width: 200,
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    child: TextFormField(
+                      maxLines: null,
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Type here',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
         break;
@@ -232,9 +297,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
               borderRadius: BorderRadius.circular(30)),
           child: Center(
               child: Icon(
-                Icons.keyboard_backspace_outlined,
-                color: Colors.white,
-              )),
+            Icons.keyboard_backspace_outlined,
+            color: Colors.white,
+          )),
         ),
       ),
       body: Stack(alignment: Alignment.center, children: [
@@ -309,9 +374,16 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                     case 2:
                                       // 2.2  Check if the the employee has enough days as he requisted if yes send the requsit otherwise display
                                       // you don't have enough days in your time off
+
+
+                                      if(_textEditingController.text.trim() == '' ){
+                                        AppColors.showCustomSnackbar(context, 'Please fill the reason text feild');
+                                        return;
+                                      }
+
                                       if (this.eDate == null ||
                                           this.sDate == null) {
-                                        MyDialog.showAlert(context,
+                                       AppColors.showCustomSnackbar(context,
                                             'Please seclect date range!');
                                         return;
                                       }
@@ -346,13 +418,15 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                               this.eDate!,
                                               this.sDate!,
                                               url,
-                                            requsitedDayes.toString()
+                                              requsitedDayes.toString() ,
+                                            this._textEditingController.text.trim()
 
                                           );
 
                                           isLoading = false;
                                           setState(() {});
-                                          AppColors.showCustomSnackbar(context, 'Your request has been sent successfully');
+                                          AppColors.showCustomSnackbar(context,
+                                              'Your request has been sent successfully');
 
                                           return;
                                         } else {
@@ -365,6 +439,13 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                       break;
                                     case 3:
                                       //3. send the requist (the non time off requists)
+
+                                      if (_textEditingController.text.trim() ==
+                                          '') {
+                                        AppColors.showCustomSnackbar(context,
+                                            'Please fill the reason text feild');
+                                        return;
+                                      }
                                       MyAlertDialog.showConfirmationDialog(
                                           context,
                                           'Are you certain about sending the salary certificate request?',
@@ -374,12 +455,17 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                         await nonTimeOffReq(
                                             FirebaseAuth
                                                 .instance.currentUser!.uid,
-                                            this.requists[selectedOption]!);
+                                            this.requists[selectedOption]!,
+                                            this
+                                                ._textEditingController
+                                                .text
+                                                .trim());
                                         isLoading = false;
                                         setState(() {});
-                                       /* MyDialog.showAlert(context,
+                                        /* MyDialog.showAlert(context,
                                             'Your request has been successfully sent.');*/
-                                        AppColors.showCustomSnackbar(context, 'Your request has been sent successfully');
+                                        AppColors.showCustomSnackbar(context,
+                                            'Your request has been sent successfully');
                                       }, () {
                                         Navigator.of(context).pop();
                                       });
@@ -426,7 +512,8 @@ class _requsitsScreenState extends State<requsitsScreen> {
     await getTimeOffTitles();
   }
 
-  Future<void> nonTimeOffReq(String userId, String workflowId) async {
+  Future<void> nonTimeOffReq(
+      String userId, String workflowId, String requistReason) async {
     try {
       DateTime currentDate = DateTime.now();
       List<String> flowOrder = [];
@@ -437,8 +524,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
         'title': workflowId,
         'flow': {},
         'status': 'pending',
-        'return':false ,
-        'returnReason':''
+        'return': false,
+        'returnReason': '',
+        'reqReason': requistReason
       };
       // Retrieve the workflow document
       DocumentSnapshot workflowSnapshot = await FirebaseFirestore.instance
@@ -475,14 +563,8 @@ class _requsitsScreenState extends State<requsitsScreen> {
     }
   }
 
-  Future<void> timeOffReq(
-    String userId,
-    String workflowId,
-      DateTime eData,
-    DateTime sDate,
-    String docUrl,
-      String ReqistedDays
-  ) async {
+  Future<void> timeOffReq(String userId, String workflowId, DateTime eData,
+      DateTime sDate, String docUrl, String ReqistedDays , String requistReason) async {
     try {
       DateTime currentDate = DateTime.now();
       List<String> flowOrder = [];
@@ -497,9 +579,11 @@ class _requsitsScreenState extends State<requsitsScreen> {
         'eData': eData,
         'sDate': sDate,
         'docUrl': docUrl,
-        'ReqistedDays':ReqistedDays,
-        'return':false ,
-        'returnReason':''
+        'ReqistedDays': ReqistedDays,
+        'return': false,
+        'returnReason': '',
+        'reqReason' :requistReason
+
       };
 
       // Retrieve the workflow document

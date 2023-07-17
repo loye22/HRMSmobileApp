@@ -344,7 +344,7 @@ class _returnedWidgetState extends State<returnedWidget> {
                 SizedBox(
                   height: h,
                 ),
-                newUrl == ""
+                newUrl != ""
                     ? Row(
                         children: [
                           Text(
