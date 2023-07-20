@@ -50,7 +50,7 @@ class _ButtonState extends State<Button> {
               Expanded(
                   child: Text(
                 this.widget.txt.toString(),
-                style: TextStyle(color: Colors.white, fontSize: MediaQuery.of(context).size.width * 0.045),
+                style: TextStyle(color: Colors.white, fontSize: MediaQuery.of(context).size.width * 0.035),
               ))
             ],
           )),

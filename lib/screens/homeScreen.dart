@@ -120,7 +120,7 @@ class _homeScreenState extends State<homeScreen> {
 
 
                             },
-                            txt: 'Attenddance reports  ',
+                            txt: 'Attenddance\nreports  ',
                             isSelected: true),
                       ),
 
@@ -138,7 +138,7 @@ class _homeScreenState extends State<homeScreen> {
                             onPress: () {
                               Navigator.of(context).pushNamed(workExpensesScreen.routeName);
                             },
-                            txt: 'Work expenses',
+                            txt: 'Work\nexpenses',
                             isSelected: true),
                       ),
                       Container(
@@ -149,7 +149,7 @@ class _homeScreenState extends State<homeScreen> {
                             onPress: () {
                               Navigator.of(context).pushNamed(requestReportsScreen.routeName);
                             },
-                            txt: 'Request reports',
+                            txt: 'Request\nreports',
                             isSelected: true),
                       )
                     ],

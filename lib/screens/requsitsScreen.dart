@@ -194,29 +194,33 @@ class _requsitsScreenState extends State<requsitsScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text('Type your requist reason here',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold)),
+                  Center(
+                    child: Text('Type your requist reason here',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold)),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
-                  Animate(
-                    effects: [FadeEffect(), ScaleEffect()],
-                    child: Container(
-                      width: 300,
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      child: TextFormField(
-                        maxLines: null,
-                        controller: _textEditingController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Type here',
+                  Center(
+                    child: Animate(
+                      effects: [FadeEffect(), ScaleEffect()],
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 100,
+                        padding: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                        child: TextFormField(
+                          maxLines: null,
+                          controller: _textEditingController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Type here',
+                          ),
                         ),
                       ),
                     ),
@@ -241,31 +245,37 @@ class _requsitsScreenState extends State<requsitsScreen> {
                 color: Colors.grey.shade200.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(30)),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Type your requist reason here',
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold)),
+                SizedBox(height: 20,),
+                Center(
+                  child: Text('Type your requist reason here',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold)),
+                ),
                 SizedBox(
                   height: 20,
                 ),
-                Animate(
-                  effects: [FadeEffect(), ScaleEffect()],
-                  child: Container(
-                    width: 200,
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                    ),
-                    child: TextFormField(
-                      maxLines: null,
-                      controller: _textEditingController,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Type here',
+                Center(
+                  child: Animate(
+                    effects: [FadeEffect(), ScaleEffect()],
+                    child: Container(
+                        width: MediaQuery.of(context).size.width - 100,
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      ),
+                      child: TextFormField(
+                        maxLines: null,
+                        controller: _textEditingController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Type here',
+                        ),
                       ),
                     ),
                   ),

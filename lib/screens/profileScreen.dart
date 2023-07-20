@@ -142,9 +142,9 @@ class _profileScreenState extends State<profileScreen> {
                                           snapShot.data!['dob'].toDate() ??
                                               DateTime.now())),
                                   _buildPersonalInfoItem(
-                                      'Email', 'employeeProfile.email'),
+                                      'Email', snapShot.data!['email'] ?? '404NotFond'),
                                   _buildPersonalInfoItem(
-                                      'Gender', 'employeeProfile.gender'),
+                                      'Gender',snapShot.data!['gender'] ?? '404NotFond'),
                                   _buildPersonalInfoItem(
                                       'Hiring Date',
                                       DateFormat('yyyy-MM-dd').format(snapShot
