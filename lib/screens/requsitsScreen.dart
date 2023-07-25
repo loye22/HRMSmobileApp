@@ -295,23 +295,6 @@ class _requsitsScreenState extends State<requsitsScreen> {
         break;
     }
     return Scaffold(
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-              color: Colors.lightBlueAccent,
-              borderRadius: BorderRadius.circular(30)),
-          child: Center(
-              child: Icon(
-            Icons.keyboard_backspace_outlined,
-            color: Colors.white,
-          )),
-        ),
-      ),
       body: Stack(alignment: Alignment.center, children: [
         Container(
           decoration: AppColors.decoration,

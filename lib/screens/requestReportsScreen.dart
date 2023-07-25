@@ -31,23 +31,7 @@ class _requestReportsScreenState extends State<requestReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-              color: Colors.lightBlueAccent,
-              borderRadius: BorderRadius.circular(30)),
-          child: Center(
-              child: Icon(
-            Icons.keyboard_backspace_outlined,
-            color: Colors.white,
-          )),
-        ),
-      ),
+
       body: Stack(
         alignment: Alignment.center,
         children: [

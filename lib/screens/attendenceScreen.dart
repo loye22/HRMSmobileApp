@@ -67,23 +67,7 @@ class _attendenceScreenState extends State<attendenceScreen>
 
     return Scaffold(
         key: _scaffoldKey,
-        floatingActionButton: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-                color: Colors.lightBlueAccent,
-                borderRadius: BorderRadius.circular(30)),
-            child: Center(
-                child: Icon(
-                  Icons.keyboard_backspace_outlined,
-                  color: Colors.white,
-                )),
-          ),
-        ),
+
       body: FutureBuilder(
           future: initt(),
           builder: (ctx, snapShot) {

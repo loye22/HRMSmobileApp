@@ -261,7 +261,7 @@ class _profileScreenState extends State<profileScreen> {
 
       // Check if the employee document exists
       if (employeeSnapshot.exists) {
-        print(employeeSnapshot.data()!);
+       // print(employeeSnapshot.data()!);
         return employeeSnapshot.data()!;
       } else {
         throw Exception(
