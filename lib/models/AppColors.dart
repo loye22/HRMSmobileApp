@@ -5,16 +5,13 @@ class AppColors {
   static const Color color2 = Color(0xFF1FBAAB);
   static Color colorWithOpacity =
       Colors.grey.shade200.withOpacity(0.25); // Example color 2
-  static const BoxDecoration decoration = BoxDecoration(
-    gradient: LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        color1, // Start color
-        color2, // End color
-      ],
-    ),
+  static const BoxDecoration decoration =  BoxDecoration(
+    image: DecorationImage(
+        image: AssetImage("assets/tstiBackGround.jpg"), fit: BoxFit.cover),
   );
+
+
+
   static BoxDecoration decoration2 = BoxDecoration(
    // borderRadius: BorderRadius.circular(30),
     color: Colors.grey.shade200.withOpacity(0.25),

@@ -61,155 +61,161 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                         content: StatefulBuilder(
                           builder:
                               (BuildContext context, StateSetter setState) =>
-                                  Column(
+                                  SingleChildScrollView(
+                                    child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               TextField(
                                 controller: _textEditingController,
                                 decoration: InputDecoration(
-                                  labelText: 'Title',
+                                    labelText: 'Title',
                                 ),
                               ),
-                              SizedBox(height: 20), TextField(
+                              SizedBox(height: 20),
+                              TextField(
                                 controller: _textEditingController2,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
 
-                                  labelText: 'Amount',
+                                    labelText: 'Amount',
                                 ),
                               ),
                               SizedBox(height: 20),
                               this.result != null
-                                  ? Container(
-                                      height: 40,
-                                      width: double.infinity,
-                                      //   decoration: BoxDecoration(border: Border.all(color: Colors.red)),
-                                      child: Center(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Icon(Icons.attachment),
-                                            Expanded(
-                                                child: Text(this.filename)),
-                                            IconButton(
-                                                onPressed: () {
-                                                  this.result = null;
-                                                  this.filename = '';
-                                                  setState(() {});
-                                                },
-                                                icon: Icon(
-                                                  Icons.delete,
-                                                  color: Colors.red,
-                                                ))
-                                          ],
+                                    ? Container(
+                                        height: 40,
+                                        width: double.infinity,
+                                        //   decoration: BoxDecoration(border: Border.all(color: Colors.red)),
+                                        child: Center(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Icon(Icons.attachment),
+                                              Expanded(
+                                                  child: Text(this.filename)),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    this.result = null;
+                                                    this.filename = '';
+                                                    setState(() {});
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ))
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  : SizedBox.shrink(),
+                                      )
+                                    : SizedBox.shrink(),
                               isLoading
-                                  ? Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : Column(
-                                      children: [
-                                        SizedBox(height: 20),
-                                        GestureDetector(
-                                          child: Text('Add invoice'),
-                                          onTap: () async {
-                                            // Implement your upload logic here
-                                            this.result = await FilePicker
-                                                .platform
-                                                .pickFiles();
-                                            this.filename =
-                                                result!.files.single.name;
-                                            setState(() {});
-                                          },
-                                        ),
-                                        SizedBox(height: 20),
-                                        GestureDetector(
-                                          child: Text('Submit'),
-                                          onTap: () async {
-                                            try {
-                                              if (_textEditingController.text ==
-                                                  '') {
-                                                MyDialog.showAlert(context,
-                                                    'Please add title');
-                                                return;
-                                              }
-                                              if (_textEditingController2.text ==
-                                                  '') {
-                                                MyDialog.showAlert(context,
-                                                    'Please add the amount');
-                                                return;
-                                              }
-                                              if (result == null) {
-                                                MyDialog.showAlert(context,
-                                                    'Please add invoice');
-                                                return;
-                                              }
-                                              this.isLoading = true;
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : Column(
+                                        children: [
+                                          SizedBox(height: 20),
+                                          GestureDetector(
+                                            child: Text('Add invoice'),
+                                            onTap: () async {
+                                              // Implement your upload logic here
+                                              this.result = await FilePicker
+                                                  .platform
+                                                  .pickFiles();
+                                              this.filename =
+                                                  result!.files.single.name;
                                               setState(() {});
-                                              String fileName = DateTime.now()
-                                                  .millisecondsSinceEpoch
-                                                  .toString();
-                                              Reference ref = FirebaseStorage
-                                                  .instance
-                                                  .ref()
-                                                  .child('workExp/$fileName');
-                                              UploadTask uploadTask =
-                                                  ref.putFile(File(this
-                                                      .result!
-                                                      .files
-                                                      .first
-                                                      .path!));
-                                              TaskSnapshot storageTaskSnapshot =
-                                                  await uploadTask
-                                                      .whenComplete(() {});
-                                              String downloadUrl =
-                                                  await storageTaskSnapshot.ref
-                                                      .getDownloadURL();
-
-                                              User? user = FirebaseAuth
-                                                  .instance.currentUser;
-                                              String? uid = user?.uid;
-
-                                              // Save download URL to Firestore
-                                              FirebaseFirestore.instance
-                                                  .collection('workExp')
-                                                  .add({
-                                                'eid': uid.toString(),
-                                                'date': DateTime.now()
+                                            },
+                                          ),
+                                          SizedBox(height: 20),
+                                          GestureDetector(
+                                            child: Text('Submit'),
+                                            onTap: () async {
+                                              try {
+                                                if (_textEditingController.text ==
+                                                    '') {
+                                                  MyDialog.showAlert(context,
+                                                      'Please add title');
+                                                  return;
+                                                }
+                                                if (_textEditingController2.text ==
+                                                    '') {
+                                                  MyDialog.showAlert(context,
+                                                      'Please add the amount');
+                                                  return;
+                                                }
+                                                if (result == null) {
+                                                  MyDialog.showAlert(context,
+                                                      'Please add invoice');
+                                                  return;
+                                                }
+                                                this.isLoading = true;
+                                                setState(() {});
+                                                String fileName = DateTime.now()
                                                     .millisecondsSinceEpoch
-                                                    .toString(),
-                                                'title': this
-                                                    ._textEditingController
-                                                    .text
-                                                    .toString(),
-                                                'status': false,
-                                                'docUrl': downloadUrl,
-                                                'amount':_textEditingController2.text
-                                              }).then((value) {
-                                                this.isLoading = false ;
-                                                Navigator.of(context).pop();
+                                                    .toString();
+                                                Reference ref = FirebaseStorage
+                                                    .instance
+                                                    .ref()
+                                                    .child('workExp/$fileName');
+                                                UploadTask uploadTask =
+                                                    ref.putFile(File(this
+                                                        .result!
+                                                        .files
+                                                        .first
+                                                        .path!));
+                                                TaskSnapshot storageTaskSnapshot =
+                                                    await uploadTask
+                                                        .whenComplete(() {});
+                                                String downloadUrl =
+                                                    await storageTaskSnapshot.ref
+                                                        .getDownloadURL();
 
-                                              return ;
-                                              });
+                                                User? user = FirebaseAuth
+                                                    .instance.currentUser;
+                                                String? uid = user?.uid;
 
-                                              // upload the data
+                                                // Save download URL to Firestore
+                                                FirebaseFirestore.instance
+                                                    .collection('workExp')
+                                                    .add({
+                                                  'eid': uid.toString(),
+                                                  'date': DateTime.now()
+                                                      .millisecondsSinceEpoch
+                                                      .toString(),
+                                                  'title': this
+                                                      ._textEditingController
+                                                      .text
+                                                      .toString(),
+                                                  'status': false,
+                                                  'docUrl': downloadUrl,
+                                                  'amount':_textEditingController2.text
+                                                }).then((value) {
+                                                  this.isLoading = false ;
+                                                  Navigator.of(context).pop();
 
-                                             // Close the dialog
-                                            } catch (e) {
-                                              print(e.toString()  + ">>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                                              MyDialog.showAlert(
-                                                  context, e.toString());
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                                return ;
+                                                });
+
+                                                // upload the data
+
+                                               // Close the dialog
+                                              } catch (e) {
+                                                print(e.toString()  + ">>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                                MyDialog.showAlert(
+                                                    context, e.toString());
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                              TextButton(onPressed: (){
+                                Navigator.of(context).pop();
+                              }, child: Text('Cancel' , style: TextStyle(color: Colors.red),))
                             ],
                           ),
+                                  ),
                         ),
                       ),
                     );
@@ -301,8 +307,9 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
 
   Future<List<Map<String, dynamic>>> retrieveAllWorkExpData() async {
     try {
+
       QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('workExp').get();
+          await FirebaseFirestore.instance.collection('workExp').where('eid',isEqualTo:FirebaseAuth.instance.currentUser!.uid.toString()).get();
       List<Map<String, dynamic>> data = [];
 
       if (querySnapshot.docs.isNotEmpty) {
