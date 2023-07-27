@@ -42,7 +42,7 @@ class _distanceInfoState extends State<distanceInfo> {
             SizedBox(width: 30,),
             Icon(Icons.cancel_outlined , color: Colors.white,),
             SizedBox(width: 50,),
-            Expanded(child: Text('you are out side the office please click refresh  \n ${widget.distance} m away' , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold , fontSize: 18),)),
+            Expanded(child: Text('you are out side the office  \n ${widget.distance} m away' , style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold , fontSize: 18),)),
           ],
         ),
       ),
