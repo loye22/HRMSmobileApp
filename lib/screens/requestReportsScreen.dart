@@ -44,12 +44,12 @@ class _requestReportsScreenState extends State<requestReportsScreen> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            top: 90,
             child: Container(
               width: MediaQuery.of(context).size.width - 50,
-              height: MediaQuery.of(context).size.height - 80,
+              height: MediaQuery.of(context).size.height - 160,
               decoration: BoxDecoration(
-                  color: Colors.grey.shade200.withOpacity(0.55),
+                  //color: Colors.grey.shade200.withOpacity(0.55),
                   borderRadius: BorderRadius.circular(30)),
               child: this.returned
                   ? returnedWidget(returnedData: this.returnedData)

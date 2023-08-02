@@ -29,10 +29,8 @@ class _ButtonState extends State<Button> {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
-            //  border: Border.all(color: Colors.white.withOpacity(0.3)),
-            color: this.widget.isSelected
-                ? Colors.grey.shade200.withOpacity(0.45)
-                : null),
+
+            color:Color.fromRGBO(106, 133, 104, 100)),
         width: 200,
         //height: 30,
         child: Padding(

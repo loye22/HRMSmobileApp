@@ -60,10 +60,27 @@ class _attendenceScreenState extends State<attendenceScreen>
   }
   @override
 
+  Future<void> didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    // 1.1
+    bool  myValue = await getDataWithExpiry();
+    if (myValue) {
+      // The value has expired so delete the 'key' shrePreff
+      try {
+        SharedPreferences f =  await SharedPreferences.getInstance() ;
+      await f.remove('key');}
+          catch(e){
+
+          }
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 
     return Scaffold(
         key: _scaffoldKey,
@@ -134,7 +151,7 @@ class _attendenceScreenState extends State<attendenceScreen>
                     bottom: 10,
                     child: Container(
                       width: MediaQuery.of(context).size.width - 20,
-                      height: MediaQuery.of(context).size.height - 70,
+                      height: MediaQuery.of(context).size.height - 100,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200.withOpacity(0.55),
                         borderRadius: BorderRadius.circular(30),
@@ -316,6 +333,9 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                   // 3. Upload the check in record to the attendence collection
                                                                                   // 4. create sharedPref named DocId which ref to the reocrd attendince ID so we
                                                                                   // can use it to check out
+                                                                                  // 5. create sharedPref namde expiresAt where we store the expDuration
+                                                                                  //  int expiryTimestamp = DateTime.now().millisecondsSinceEpoch + expiryDuration
+                                                                                  // so we can check this to reset the check in/out proceder
 
                                                                                   try {
                                                                                     this.isLoading = true;
@@ -387,11 +407,15 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                     });
                                                                                     //4.
                                                                                     await f.data!.setString('key', documentRef.id);
+                                                                                    //5.
+                                                                                    await f.data!.setInt('expiresAt', Duration(hours: 16).inMilliseconds  + DateTime.now().millisecondsSinceEpoch);
 
-                                                                                  //  Navigator.of(context).pop();
+
+                                                                                    //  Navigator.of(context).pop();
 
                                                                                     //MyDialog.showAlert(context, 'Check-in successful');
                                                                                     AppColors.showCustomSnackbar(context,  'Check-in successful');
+                                                                                    Navigator.of(context).pop();
 
 
                                                                                   } catch (e) {
@@ -452,6 +476,9 @@ class _attendenceScreenState extends State<attendenceScreen>
                                                                                       }
                                                                                       return;
                                                                                     }
+
+
+
 
                                                                                     //2.
                                                                                     XFile? image = await captureSelfie(context);
@@ -670,6 +697,25 @@ class _attendenceScreenState extends State<attendenceScreen>
   }
 
 
+  // this function is to check the expiry pertiod if it more that 10 hors will delete the check out shrepreffrence
+  Future<bool> getDataWithExpiry() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Retrieve the value and the expiry timestamp
+    int expiryTimestamp = prefs.getInt('expiresAt') ?? 0;
+    print(expiryTimestamp.toString() + ':   expiryTimestamp');
+    print( DateTime.now().millisecondsSinceEpoch.toString() + ': datetime.mnow');
+
+    // Check if the data is expired
+    if (expiryTimestamp > 0 && DateTime.now().millisecondsSinceEpoch > expiryTimestamp ) {
+      // Data has expired; delete it and return null
+      prefs.remove('expiresAt');
+      return true ;
+    }
+    return false;
+  }
+
+
   show(BuildContext context){
     var dialog = Dialog(
       child: Container(
@@ -704,7 +750,6 @@ class _attendenceScreenState extends State<attendenceScreen>
         ),
       ),
     );}
-
 
   Future<Map<String, dynamic>?> getShiftsData(String employeeId) async {
     try {

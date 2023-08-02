@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+import 'package:mobilehrmss/models/AppColors.dart';
 
 class attendanceReportCell extends StatelessWidget {
   final String checkInTimeStamp;
@@ -39,7 +40,7 @@ class attendanceReportCell extends StatelessWidget {
       height: MediaQuery.of(context).size.height * 0.15,
       width: MediaQuery.of(context).size.width - 50,
       decoration: BoxDecoration(
-        color: Colors.grey.shade200.withOpacity(0.55),
+        color: Colors.grey.shade200.withOpacity(0.9),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
@@ -47,7 +48,7 @@ class attendanceReportCell extends StatelessWidget {
           Container(
             width: 30,
             height: 200,
-            color: Colors.white,
+            color: AppColors.staticColor,
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.03,
@@ -60,23 +61,17 @@ class attendanceReportCell extends StatelessWidget {
                         int.parse(this.checkInTimeStamp))
                     .day
                     .toString(),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: MediaQuery.of(context).size.width * 0.09,
-                    fontWeight: FontWeight.bold),
+                style:AppColors.myTextStyleWithSizde(MediaQuery.of(context).size.width * 0.09),
               ),
-              Text(
+              Text( 
                 monthNames[DateTime.fromMillisecondsSinceEpoch(
                         int.parse(this.checkInTimeStamp))
                     .month],
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: MediaQuery.of(context).size.width * 0.05,
-                    fontWeight: FontWeight.bold),
+                style: AppColors.myTextStyleWithSizde(MediaQuery.of(context).size.width * 0.05),
               )
             ],
           ),
-          SizedBox(
+          SizedBox( 
             width: MediaQuery.of(context).size.width * 0.03,
           ),
           Column(
@@ -84,10 +79,8 @@ class attendanceReportCell extends StatelessWidget {
             children: [
               Text(
                   '${convertTimestampToTime(this.checkInTimeStamp)} to ${this.checkOutTimeStamp == '' ? '---' :  convertTimestampToTime(this.checkOutTimeStamp)} ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: MediaQuery.of(context).size.width * 0.05,
-                  )),
+                  style: AppColors.myTextStyleWithSizde(MediaQuery.of(context).size.width * 0.05),
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -95,16 +88,14 @@ class attendanceReportCell extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.location_on,
-                    color: Colors.white,
+                    color: AppColors.staticColor,
                   ),
                   SizedBox(
                     width: 10,
                   ),
                   Text(this.bransh,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: MediaQuery.of(context).size.width * 0.05,
-                      )),
+                      style:AppColors.myTextStyleWithSizde(MediaQuery.of(context).size.width * 0.05),
+                  ),
                 ],
               ),
             ],
@@ -114,10 +105,7 @@ class attendanceReportCell extends StatelessWidget {
           ),
           Expanded(
             child: Text('${this.workingHours}hours',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: MediaQuery.of(context).size.width * 0.05,
-                )),
+                style: AppColors.myTextStyleWithSizde(MediaQuery.of(context).size.width * 0.04)),
           )
         ],
       ),

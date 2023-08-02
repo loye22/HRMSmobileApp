@@ -56,7 +56,16 @@ dependencies:
   provider: ^6.0.5
   syncfusion_flutter_datepicker: ^21.2.10
   file_picker: ^5.3.2
+  flutter_screen_lock: ^9.0.1
+  local_auth: ^2.1.6
+  flutter_launcher_icons: ^0.13.1
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/1024.png"
+  min_sdk_android: 16 # android min sdk min:16, default 21
+  adaptive_icon_background : "assets/1025.png"
 
 dev_dependencies:
   flutter_test:

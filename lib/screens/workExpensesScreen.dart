@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,17 +24,34 @@ class workExpensesScreen extends StatefulWidget {
 }
 
 class _workExpensesScreenState extends State<workExpensesScreen> {
-  TextEditingController _textEditingController = TextEditingController();
+  //TextEditingController _textEditingController = TextEditingController();
   TextEditingController _textEditingController2 = TextEditingController();
   FilePickerResult? result = null;
-
   String filename = '';
-
   bool isLoading = false;
+  List<String> options = [
+    'Bank Fees and Charges',
+    'Commission Expense',
+    'Courier Charge',
+    'Fines & Late Fees',
+    'Gasoline Charge',
+    'Labour & Emigration',
+    'License & Other Legal Fees',
+    'Medical Insurance Cards',
+    'Office Supplies & Stationery',
+    'Other Expenses',
+    'Renovations and Maintenance',
+    'Rent Expense',
+    'Staff uniform',
+    'Telephone & Utilities Expense',
+    'Travel Expense',
+    'Visa Expense',
+  ];
+  String selectedOption = 'Bank Fees and Charges';
 
   @override
   void dispose() {
-    _textEditingController.dispose();
+    //_textEditingController.dispose();
     _textEditingController2.dispose();
     this.result = null;
     this.filename = '';
@@ -47,7 +65,8 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-              color: AppColors.color1, borderRadius: BorderRadius.circular(30)),
+              color: AppColors.staticColor,
+              borderRadius: BorderRadius.circular(30)),
           child: IconButton(
               onPressed: () {
                 showDialog(
@@ -62,26 +81,44 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                           builder:
                               (BuildContext context, StateSetter setState) =>
                                   SingleChildScrollView(
-                                    child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextField(
-                                controller: _textEditingController,
-                                decoration: InputDecoration(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                /*TextField(
+                                  controller: _textEditingController,
+                                  decoration: InputDecoration(
                                     labelText: 'Title',
+                                  ),
+                                ),*/
+                                Container(
+                                  width: double.infinity,
+                                  child: DropdownButton(
+                                    value: this.selectedOption,
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        selectedOption = newValue!;
+                                      });
+                                    },
+                                    items: options
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 20),
-                              TextField(
-                                controller: _textEditingController2,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-
+                                SizedBox(height: 20),
+                                TextField(
+                                  controller: _textEditingController2,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
                                     labelText: 'Amount',
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 20),
-                              this.result != null
+                                SizedBox(height: 20),
+                                this.result != null
                                     ? Container(
                                         height: 40,
                                         width: double.infinity,
@@ -109,7 +146,7 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                         ),
                                       )
                                     : SizedBox.shrink(),
-                              isLoading
+                                isLoading
                                     ? Center(
                                         child: CircularProgressIndicator(),
                                       )
@@ -133,13 +170,9 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                             child: Text('Submit'),
                                             onTap: () async {
                                               try {
-                                                if (_textEditingController.text ==
-                                                    '') {
-                                                  MyDialog.showAlert(context,
-                                                      'Please add title');
-                                                  return;
-                                                }
-                                                if (_textEditingController2.text ==
+
+                                                if (_textEditingController2
+                                                        .text ==
                                                     '') {
                                                   MyDialog.showAlert(context,
                                                       'Please add the amount');
@@ -165,11 +198,13 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                                         .files
                                                         .first
                                                         .path!));
-                                                TaskSnapshot storageTaskSnapshot =
+                                                TaskSnapshot
+                                                    storageTaskSnapshot =
                                                     await uploadTask
                                                         .whenComplete(() {});
                                                 String downloadUrl =
-                                                    await storageTaskSnapshot.ref
+                                                    await storageTaskSnapshot
+                                                        .ref
                                                         .getDownloadURL();
 
                                                 User? user = FirebaseAuth
@@ -184,25 +219,25 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                                   'date': DateTime.now()
                                                       .millisecondsSinceEpoch
                                                       .toString(),
-                                                  'title': this
-                                                      ._textEditingController
-                                                      .text
-                                                      .toString(),
+                                                  'title': this.selectedOption,
                                                   'status': false,
                                                   'docUrl': downloadUrl,
-                                                  'amount':_textEditingController2.text
+                                                  'amount':
+                                                      _textEditingController2
+                                                          .text
                                                 }).then((value) {
-                                                  this.isLoading = false ;
+                                                  this.isLoading = false;
                                                   Navigator.of(context).pop();
 
-                                                return ;
+                                                  return;
                                                 });
 
                                                 // upload the data
 
-                                               // Close the dialog
+                                                // Close the dialog
                                               } catch (e) {
-                                                print(e.toString()  + ">>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                                                print(e.toString() +
+                                                    ">>>>>>>>>>>>>>>>>>>>>>>>>>>");
                                                 MyDialog.showAlert(
                                                     context, e.toString());
                                               }
@@ -210,12 +245,17 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                                           ),
                                         ],
                                       ),
-                              TextButton(onPressed: (){
-                                Navigator.of(context).pop();
-                              }, child: Text('Cancel' , style: TextStyle(color: Colors.red),))
-                            ],
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(
+                                      'Cancel',
+                                      style: TextStyle(color: Colors.red),
+                                    ))
+                              ],
+                            ),
                           ),
-                                  ),
                         ),
                       ),
                     );
@@ -232,7 +272,10 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                   setState(() {});
                 }*/
               },
-              icon: Icon(Icons.add))),
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ))),
       body: Stack(alignment: Alignment.center, children: [
         Container(
           decoration: AppColors.decoration,
@@ -244,9 +287,9 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
         ),
         Container(
           width: MediaQuery.of(context).size.width - 50,
-          height: MediaQuery.of(context).size.height - 80,
+          height: MediaQuery.of(context).size.height - 180,
           decoration: BoxDecoration(
-            color: Colors.grey.shade200.withOpacity(0.55),
+           // color: Colors.grey.shade200.withOpacity(0.9),
             borderRadius: BorderRadius.circular(30),
           ),
           child: FutureBuilder(
@@ -271,7 +314,6 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                       DataColumn2(
                         label: Center(child: Text('Title')),
                       ),
-
                       DataColumn2(
                         label: Center(child: Text('Status')),
                       ),
@@ -307,9 +349,11 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
 
   Future<List<Map<String, dynamic>>> retrieveAllWorkExpData() async {
     try {
-
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('workExp').where('eid',isEqualTo:FirebaseAuth.instance.currentUser!.uid.toString()).get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('workExp')
+          .where('eid',
+              isEqualTo: FirebaseAuth.instance.currentUser!.uid.toString())
+          .get();
       List<Map<String, dynamic>> data = [];
 
       if (querySnapshot.docs.isNotEmpty) {

@@ -27,103 +27,116 @@ class _loginPageState extends State<loginPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Background(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 40),
-                child: Text(
-                  "LOGIN",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2661FA),
-                      fontSize: 36),
-                  textAlign: TextAlign.left,
+      body: Stack(
+        children: [
+          Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/login_BG.jpg'),
+                  fit: BoxFit
+                      .cover, // You can adjust the BoxFit as per your requirement
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(horizontal: 40),
-                        child: TextFormField(
-                          decoration: InputDecoration(labelText: 'email'),
-                          validator: (value) {
-                            final bool isValid =
-                                EmailValidator.validate(value!);
-                            if (value == null || value.isEmpty || !isValid) {
-                              return 'Please enter a valid email';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _email = value!.trim();
-                          },
+              )),
+          Positioned(
+            top: 250,
+            left: 40,
+            child: Text(
+              'Login',
+              style: GoogleFonts.montserratAlternates(
+                  fontSize: 40,
+                  color: Color.fromRGBO(0, 81, 45, 100),
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+          SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 300,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.symmetric(horizontal: 40),
+                          child: TextFormField(
+                            decoration: InputDecoration(labelText: 'email'),
+                            validator: (value) {
+                              final bool isValid =
+                                  EmailValidator.validate(value!);
+                              if (value == null || value.isEmpty || !isValid) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _email = value!.trim();
+                            },
+                          ),
                         ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(horizontal: 40),
-                        child: TextFormField(
-                          decoration: InputDecoration(labelText: 'Password'),
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value == '') {
-                              return 'Please enter a password';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _password = value!;
-                          },
+                        Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.symmetric(horizontal: 40),
+                          child: TextFormField(
+                            decoration: InputDecoration(labelText: 'Password'),
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value == '') {
+                                return 'Please enter a password';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _password = value!;
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: size.height * 0.05),
-              isLoading
-                  ? CircularProgressIndicator(
-                    color: Colors.orangeAccent,
-                  )
-                  : GestureDetector(
-                      onTap: () async {
-                        await _submitForm();
-                      },
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                SizedBox(height: size.height * 0.05),
+                isLoading
+                    ? CircularProgressIndicator(
+                        color: Colors.orangeAccent,
+                      )
+                    : GestureDetector(
+                        onTap: () async {
+                          await _submitForm();
+                        },
                         child: Container(
-                          alignment: Alignment.center,
-                          height: 50.0,
-                          width: size.width * 0.5,
-                          decoration: new BoxDecoration(
-                              borderRadius: BorderRadius.circular(80.0),
-                              gradient: new LinearGradient(colors: [
-                                Color.fromARGB(255, 255, 136, 34),
-                                Color.fromARGB(255, 255, 177, 41)
-                              ])),
-                          //   padding: const EdgeInsets.all(0),
-                          child: Text(
-                            "LOGIN",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          alignment: Alignment.centerRight,
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 10),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50.0,
+                            width: size.width * 0.5,
+                            decoration: new BoxDecoration(
+                                borderRadius: BorderRadius.circular(80.0),
+                                color: Color.fromRGBO(106, 133, 104, 100)),
+                            //   padding: const EdgeInsets.all(0),
+                            child: Text(
+                              "LOGIN",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobilehrmss/models/AppColors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class DonutChartWidget extends StatefulWidget {
@@ -33,7 +34,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget> {
               dataSource: <ChartSampleData>[
                 ChartSampleData('Used Days', widget.usedDays ,Colors.red),
                 ChartSampleData(
-                    'Remaining Days', widget.totalDays - widget.usedDays , Colors.blue),
+                    'Remaining Days', widget.totalDays - widget.usedDays , AppColors.staticColor),
               ],
               pointColorMapper: (ChartSampleData data, _) => data.color,
               xValueMapper: (ChartSampleData data, _) => data.x,
@@ -65,7 +66,7 @@ class _DonutChartWidgetState extends State<DonutChartWidget> {
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue),
+                          color: AppColors.staticColor),
                     ),
                     SizedBox(
                       height: 8,

@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)  {
           if (snapshot.hasData) {
             return homeScreen();
           } else {

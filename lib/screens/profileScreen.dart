@@ -34,160 +34,152 @@ class _profileScreenState extends State<profileScreen> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            top: 80,
             child: Container(
                 width: MediaQuery.of(context).size.width - 50,
-                height: MediaQuery.of(context).size.height - 80,
+                height: MediaQuery.of(context).size.height - 150,
                 decoration: BoxDecoration(
-                    color: Colors.grey.shade200.withOpacity(0.55),
+                   // color: Colors.grey.shade200.withOpacity(0.55),
                     borderRadius: BorderRadius.circular(30)),
-                child: SingleChildScrollView(
-                  child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: FutureBuilder(
-                          future: getEmployeeData(),
-                          builder: (ctx, snapShot) {
-                            if (snapShot.hasError) {
-                              return Center(child: Text('error 404'));
-                            }
-                            if (snapShot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
-                            } else {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 40,
-                                              backgroundImage: NetworkImage(
-                                                  snapShot.data!['photo']),
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              snapShot.data!['userName'],
-                                              style: TextStyle(fontSize: 24),
-                                            ),
-                                            Row(
-                                              children: [
-                                                IconButton(
-                                                    onPressed: () async {
+                child: Scrollbar(
+                  isAlwaysShown: true,// Force scrollbar to be always visible
+                  child: SingleChildScrollView(
+                    child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: FutureBuilder(
+                            future: getEmployeeData(),
+                            builder: (ctx, snapShot) {
+                              if (snapShot.hasError) {
+                                return Center(child: Text('error 404'));
+                              }
+                              if (snapShot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(child: CircularProgressIndicator());
+                              } else {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 40,
+                                                backgroundImage: NetworkImage(
+                                                    snapShot.data!['photo']),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                snapShot.data!['userName'],
+                                                style: AppColors.textStyle1,
+                                              ),
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    try {
+                                                      await FirebaseAuth
+                                                          .instance
+                                                          .signOut();
                                                       Navigator.of(context)
                                                           .pop();
-                                                    },
-                                                    icon: Icon(Icons
-                                                        .arrow_back_outlined)),
-                                                IconButton(
-                                                    onPressed: () async {
-                                                      try {
-                                                        await FirebaseAuth
-                                                            .instance
-                                                            .signOut();
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        print(
-                                                            'User logged out successfully.');
-                                                      } catch (e) {
-                                                        print(
-                                                            'Error occurred while logging out: $e');
-                                                      }
-                                                    },
-                                                    icon: Icon(Icons.logout)),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                                      print(
+                                                          'User logged out successfully.');
+                                                    } catch (e) {
+                                                      print(
+                                                          'Error occurred while logging out: $e');
+                                                    }
+                                                  },
+                                                  icon: Icon(Icons.logout , color: AppColors.staticColor,)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 15),
-                                  _buildPersonalInfoItem(
-                                      'Position', snapShot.data!['position']),
-                                  FutureBuilder(
-                                      future: getDepartmentTitle(
-                                          snapShot.data!['departmentID']),
-                                      builder: (ctx, snapshot) {
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        } else if (snapshot.hasError) {
-                                          return Center(
-                                            child: Text(
-                                                'Error: ${snapshot.error}'),
-                                          );
-                                        } else {
-                                          final depName = snapshot.data;
-                                          // print(depName);
-                                          return _buildPersonalInfoItem(
-                                              'Depatment',
-                                              depName != null
-                                                  ? depName
-                                                  : "not Found 404 error");
-                                        }
-                                      }),
-                                  _buildPersonalInfoItem(
-                                      'Date of Birth',
-                                      DateFormat('yyyy-MM-dd').format(
-                                          snapShot.data!['dob'].toDate() ??
-                                              DateTime.now())),
-                                  _buildPersonalInfoItem(
-                                      'Email', snapShot.data!['email'] ?? '404NotFond'),
-                                  _buildPersonalInfoItem(
-                                      'Gender',snapShot.data!['gender'] ?? '404NotFond'),
-                                  _buildPersonalInfoItem(
-                                      'Hiring Date',
-                                      DateFormat('yyyy-MM-dd').format(snapShot
-                                              .data!['hiringDate']
-                                              .toDate() ??
-                                          DateTime.now())),
-                                  _buildPersonalInfoItem('Nationality',
-                                      snapShot.data!['nationality']),
-                                  _buildPersonalInfoItem('Phone Number',
-                                      snapShot.data!['phoneNr']),
-                                  GestureDetector(
-                                    onTap:() async {
-                                      try{
-                                       SharedPreferences  sp =  await  SharedPreferences.getInstance();
-                                        await sp.remove('key');
-                                       MyDialog.showAlert(context, 'Your check in data has been reset sucesfully');
+                                    SizedBox(height: 15),
+                                    _buildPersonalInfoItem(
+                                        'Position', snapShot.data!['position']),
+                                    FutureBuilder(
+                                        future: getDepartmentTitle(
+                                            snapShot.data!['departmentID']),
+                                        builder: (ctx, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                              child: CircularProgressIndicator(),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return Center(
+                                              child: Text(
+                                                  'Error: ${snapshot.error}'),
+                                            );
+                                          } else {
+                                            final depName = snapshot.data;
+                                            // print(depName);
+                                            return _buildPersonalInfoItem(
+                                                'Depatment',
+                                                depName != null
+                                                    ? depName
+                                                    : "not Found 404 error");
+                                          }
+                                        }),
+                                    _buildPersonalInfoItem(
+                                        'Date of Birth',
+                                        DateFormat('yyyy-MM-dd').format(
+                                            snapShot.data!['dob'].toDate() ??
+                                                DateTime.now())),
+                                    _buildPersonalInfoItem(
+                                        'Email', snapShot.data!['email'] ?? '404NotFond'),
+                                    _buildPersonalInfoItem(
+                                        'Gender',snapShot.data!['gender'] ?? '404NotFond'),
+                                    _buildPersonalInfoItem(
+                                        'Hiring Date',
+                                        DateFormat('yyyy-MM-dd').format(snapShot
+                                                .data!['hiringDate']
+                                                .toDate() ??
+                                            DateTime.now())),
+                                    _buildPersonalInfoItem('Nationality',
+                                        snapShot.data!['nationality']),
+                                    _buildPersonalInfoItem('Phone Number',
+                                        snapShot.data!['phoneNr']),
+                                    GestureDetector(
+                                      onTap:() async {
+                                        try{
+                                         SharedPreferences  sp =  await  SharedPreferences.getInstance();
+                                          await sp.remove('key');
+                                         MyDialog.showAlert(context, 'Your check in data has been reset sucesfully');
 
-                                      }
-                                      catch(e){
-                                        print('error $e');
-                                        MyDialog.showAlert(context, 'error $e');
-                                      }
-                                    },
-                                    child: Container(
-                                      width: 100,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          borderRadius:
-                                              BorderRadius.circular(30)),
-                                      child: Center(
-                                          child: Text(
-                                        'Reset',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                    ),
-                                  )
-                                ],
-                              );
-                            }
-                          })),
+                                        }
+                                        catch(e){
+                                          print('error $e');
+                                          MyDialog.showAlert(context, 'error $e');
+                                        }
+                                      },
+                                      child: Container(
+                                        width: 100,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius:
+                                                BorderRadius.circular(30)),
+                                        child: Center(
+                                            child: Text(
+                                          'Reset',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              }
+                            })),
+                  ),
                 )),
           )
         ],
@@ -203,12 +195,12 @@ class _profileScreenState extends State<profileScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style:AppColors.textStyle2,
           ),
           SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(fontSize: 16),
+            style: AppColors.textStyle1,
           ),
         ],
       ),

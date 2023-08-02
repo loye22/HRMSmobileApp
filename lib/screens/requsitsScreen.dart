@@ -49,9 +49,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
             builder: (BuildContext context, BoxConstraints constraints) {
           return Container(
               width: constraints.maxWidth - 50,
-              height: constraints.maxHeight - 80,
+              height: constraints.maxHeight - 180,
               decoration: BoxDecoration(
-                  color: Colors.grey.shade200.withOpacity(0.55),
+                  //color: Colors.grey.shade200.withOpacity(0.55),
                   borderRadius: BorderRadius.circular(30)),
               child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -91,9 +91,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
           builder: (BuildContext context, BoxConstraints constraints) =>
               Container(
             width: constraints.maxWidth - 50,
-            height: constraints.maxHeight - 80,
+            height: constraints.maxHeight - 180,
             decoration: BoxDecoration(
-                color: Colors.grey.shade200.withOpacity(0.55),
+             //   color: Colors.grey.shade200.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(30)),
             child: SingleChildScrollView(
               child: Column(
@@ -108,10 +108,13 @@ class _requsitsScreenState extends State<requsitsScreen> {
                     txt: timeOffDetaks!["title"] != null
                         ? timeOffDetaks!["title"]
                         : "error",
-                    color: Colors.blue,
+                    color: AppColors.staticColor,
                   ),
                   Container(
                     child: SfDateRangePicker(
+                      endRangeSelectionColor: AppColors.staticColor,
+                      startRangeSelectionColor: AppColors.staticColor,
+                      rangeSelectionColor: AppColors.staticColor,
                       onSelectionChanged: _onSelectionChanged,
                       selectionMode: DateRangePickerSelectionMode.range,
                     ),
@@ -168,7 +171,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
                       width: 150,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: AppColors.color1,
+                          color: AppColors.staticColor,
                           borderRadius: BorderRadius.circular(30)),
                       child: Padding(
                           padding: EdgeInsets.all(12),
@@ -198,28 +201,31 @@ class _requsitsScreenState extends State<requsitsScreen> {
                     child: Text('Type your requist reason here',
                         style: TextStyle(
                             fontSize: 20,
-                            color: Colors.white,
+                            color: AppColors.staticColor,
                             fontWeight: FontWeight.bold)),
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   Center(
-                    child: Animate(
-                      effects: [FadeEffect(), ScaleEffect()],
-                      child: Container(
-                        width: MediaQuery.of(context).size.width - 100,
-                        padding: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        child: TextFormField(
-                          maxLines: null,
-                          controller: _textEditingController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Type here',
+                    child: Card(
+                      elevation: 8,
+                      child: Animate(
+                        effects: [FadeEffect(), ScaleEffect()],
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 100,
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          child: TextFormField(
+                            maxLines: null,
+                            controller: _textEditingController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Type here',
+                            ),
                           ),
                         ),
                       ),
@@ -240,9 +246,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
           builder: (BuildContext context, BoxConstraints constraints) =>
               Container(
             width: constraints.maxWidth - 50,
-            height: constraints.maxHeight - 80,
+            height: constraints.maxHeight - 280,
             decoration: BoxDecoration(
-                color: Colors.grey.shade200.withOpacity(0.55),
+             //   color: Colors.grey.shade200.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(30)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -253,28 +259,31 @@ class _requsitsScreenState extends State<requsitsScreen> {
                   child: Text('Type your requist reason here',
                       style: TextStyle(
                           fontSize: 20,
-                          color: Colors.white,
+                          color: AppColors.staticColor,
                           fontWeight: FontWeight.bold)),
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 Center(
-                  child: Animate(
-                    effects: [FadeEffect(), ScaleEffect()],
-                    child: Container(
-                        width: MediaQuery.of(context).size.width - 100,
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      child: TextFormField(
-                        maxLines: null,
-                        controller: _textEditingController,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Type here',
+                  child: Card(
+                    elevation: 5,
+                    child: Animate(
+                      effects: [FadeEffect(), ScaleEffect()],
+                      child: Container(
+                          width: MediaQuery.of(context).size.width - 100,
+                        padding: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        ),
+                        child: TextFormField(
+                          maxLines: null,
+                          controller: _textEditingController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Type here',
+                          ),
                         ),
                       ),
                     ),
@@ -468,17 +477,22 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                   }
                                 },
                                 child: Container(
+                                  width: MediaQuery.of(context).size.width *0.5,
+                                  height: MediaQuery.of(context).size.width *0.15,
                                   decoration: BoxDecoration(
-                                      color: AppColors.color2,
+
+                                      color: Color.fromRGBO(106, 133, 104, 100),
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      this.counter == 3
-                                          ? 'Submit the requist'
-                                          : 'Next',
-                                      style: TextStyle(
-                                          fontSize: 18, color: Colors.white),
+                                    child: Center(
+                                      child: Text(
+                                        this.counter == 3
+                                            ? 'Submit the requist'
+                                            : 'Next',
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
+                                      ),
                                     ),
                                   ),
                                 )),
