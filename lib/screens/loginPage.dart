@@ -105,7 +105,7 @@ class _loginPageState extends State<loginPage> {
                 SizedBox(height: size.height * 0.05),
                 isLoading
                     ? CircularProgressIndicator(
-                        color: Colors.orangeAccent,
+                        color: AppColors.staticColor,
                       )
                     : GestureDetector(
                         onTap: () async {

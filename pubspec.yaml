@@ -59,6 +59,15 @@ dependencies:
   flutter_screen_lock: ^9.0.1
   local_auth: ^2.1.6
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.1
+
+# flutter_native_splash-development.yaml
+flutter_native_splash:
+  background_image: "assets/splashScreen.jpg"
+  ios: true
+  android: true
+  web: false
+
 
 flutter_launcher_icons:
   android: "launcher_icon"

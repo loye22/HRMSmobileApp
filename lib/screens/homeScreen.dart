@@ -61,16 +61,15 @@ class _homeScreenState extends State<homeScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+
     double buttonWidth = MediaQuery.of(context).size.width / 2.4 ;
     double buttonHeidth = MediaQuery.of(context).size.height / 8 ;// 70;
     var _selectedTab = _SelectedTab.home;
-
     void _handleIndexChanged(int i) {
       setState(() {
         _selectedTab = _SelectedTab.values[i];
       });
     }
-
 
 
     return Scaffold(
@@ -94,6 +93,7 @@ class _homeScreenState extends State<homeScreen> with WidgetsBindingObserver {
                     return  Animate(
                       effects: [ FadeEffect()],
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(height:MediaQuery.of(context).size.width * 0.04 ,),
                           CircleAvatar(
@@ -103,10 +103,16 @@ class _homeScreenState extends State<homeScreen> with WidgetsBindingObserver {
 
                           ) ,
                           SizedBox(height: 20,),
-                          Text('welcome, ${snapShot.data!['userName']}' , style: GoogleFonts.montserratAlternates(
-                              fontSize: MediaQuery.of(context).size.width *0.05,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500),)
+                          Container(
+                            width: MediaQuery.of(context).size.width  * 0.9 ,
+                            height: MediaQuery.of(context).size.width  * 0.09,
+                            child: Center(
+                              child: Text('welcome, ${snapShot.data!['userName'].toString().split('_')[0]}' , style: GoogleFonts.montserratAlternates(
+                                  fontSize: MediaQuery.of(context).size.width *0.05,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500),),
+                            ),
+                          )
 
                         ],
                       ),
