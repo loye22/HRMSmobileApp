@@ -51,6 +51,8 @@ class _requestReportsScreenState extends State<requestReportsScreen> {
               decoration: BoxDecoration(
                   //color: Colors.grey.shade200.withOpacity(0.55),
                   borderRadius: BorderRadius.circular(30)),
+              // if the returned flag is true we will cahnge the behaivour
+              // otherwise we will display the data
               child: this.returned
                   ? returnedWidget(returnedData: this.returnedData)
                   : FutureBuilder(
@@ -64,7 +66,7 @@ class _requestReportsScreenState extends State<requestReportsScreen> {
                           );
                         }
                         if (snapShot.hasError) {
-                          return Center(child: Text(snapShot.error.toString()));
+                          return Center(child: Text(snapShot.error.toString() , style: AppColors.textStyle1,));
                         }
                         return DataTable2(
                             columnSpacing: 20,
@@ -214,7 +216,7 @@ class _returnedWidgetState extends State<returnedWidget> {
         }
         if (snapShot.hasError) {
           return Center(
-            child: Text(snapShot.error.toString()),
+            child: Text(snapShot.error.toString() , style: AppColors.textStyle1,),
           );
         }
         return Padding(

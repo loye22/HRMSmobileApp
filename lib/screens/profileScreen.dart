@@ -50,7 +50,7 @@ class _profileScreenState extends State<profileScreen> {
                             future: getEmployeeData(),
                             builder: (ctx, snapShot) {
                               if (snapShot.hasError) {
-                                return Center(child: Text('error 404'));
+                                return Center(child: Text('error ${snapShot.error} ' ,style: AppColors.textStyle1, ));
                               }
                               if (snapShot.connectionState ==
                                   ConnectionState.waiting) {
@@ -115,7 +115,7 @@ class _profileScreenState extends State<profileScreen> {
                                           } else if (snapshot.hasError) {
                                             return Center(
                                               child: Text(
-                                                  'Error: ${snapshot.error}'),
+                                                  'Error: ${snapshot.error}' , style: AppColors.textStyle1,),
                                             );
                                           } else {
                                             final depName = snapshot.data;

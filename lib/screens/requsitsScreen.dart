@@ -93,7 +93,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
             width: constraints.maxWidth - 50,
             height: constraints.maxHeight - 180,
             decoration: BoxDecoration(
-             //   color: Colors.grey.shade200.withOpacity(0.55),
+                //   color: Colors.grey.shade200.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(30)),
             child: SingleChildScrollView(
               child: Column(
@@ -217,7 +217,8 @@ class _requsitsScreenState extends State<requsitsScreen> {
                           padding: EdgeInsets.all(10.0),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
                           ),
                           child: TextFormField(
                             maxLines: null,
@@ -231,8 +232,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 150,)
-
+                  SizedBox(
+                    height: 150,
+                  )
                 ],
               ),
             ),
@@ -248,13 +250,15 @@ class _requsitsScreenState extends State<requsitsScreen> {
             width: constraints.maxWidth - 50,
             height: constraints.maxHeight - 280,
             decoration: BoxDecoration(
-             //   color: Colors.grey.shade200.withOpacity(0.55),
+                //   color: Colors.grey.shade200.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(30)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Center(
                   child: Text('Type your requist reason here',
                       style: TextStyle(
@@ -271,7 +275,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
                     child: Animate(
                       effects: [FadeEffect(), ScaleEffect()],
                       child: Container(
-                          width: MediaQuery.of(context).size.width - 100,
+                        width: MediaQuery.of(context).size.width - 100,
                         padding: EdgeInsets.all(10.0),
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -377,15 +381,16 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                       // 2.2  Check if the the employee has enough days as he requisted if yes send the requsit otherwise display
                                       // you don't have enough days in your time off
 
-
-                                      if(_textEditingController.text.trim() == '' ){
-                                        AppColors.showCustomSnackbar(context, 'Please fill the reason text feild');
+                                      if (_textEditingController.text.trim() ==
+                                          '') {
+                                        AppColors.showCustomSnackbar(context,
+                                            'Please fill the reason text feild');
                                         return;
                                       }
 
                                       if (this.eDate == null ||
                                           this.sDate == null) {
-                                       AppColors.showCustomSnackbar(context,
+                                        AppColors.showCustomSnackbar(context,
                                             'Please seclect date range!');
                                         return;
                                       }
@@ -420,10 +425,11 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                               this.eDate!,
                                               this.sDate!,
                                               url,
-                                              requsitedDayes.toString() ,
-                                            this._textEditingController.text.trim()
-
-                                          );
+                                              requsitedDayes.toString(),
+                                              this
+                                                  ._textEditingController
+                                                  .text
+                                                  .trim());
 
                                           isLoading = false;
                                           setState(() {});
@@ -477,10 +483,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                   }
                                 },
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width *0.5,
-                                  height: MediaQuery.of(context).size.width *0.15,
+                                  width: 200,
+                                  height: 70,
                                   decoration: BoxDecoration(
-
                                       color: Color.fromRGBO(106, 133, 104, 100),
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Padding(
@@ -570,8 +575,14 @@ class _requsitsScreenState extends State<requsitsScreen> {
     }
   }
 
-  Future<void> timeOffReq(String userId, String workflowId, DateTime eData,
-      DateTime sDate, String docUrl, String ReqistedDays , String requistReason) async {
+  Future<void> timeOffReq(
+      String userId,
+      String workflowId,
+      DateTime eData,
+      DateTime sDate,
+      String docUrl,
+      String ReqistedDays,
+      String requistReason) async {
     try {
       DateTime currentDate = DateTime.now();
       List<String> flowOrder = [];
@@ -589,8 +600,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
         'ReqistedDays': ReqistedDays,
         'return': false,
         'returnReason': '',
-        'reqReason' :requistReason
-
+        'reqReason': requistReason
       };
 
       // Retrieve the workflow document

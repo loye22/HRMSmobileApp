@@ -302,7 +302,7 @@ class _workExpensesScreenState extends State<workExpensesScreen> {
                 }
                 if (snapShot.hasError) {
                   return Center(
-                    child: Text('error: ${snapShot.error}'),
+                    child: Text('error: ${snapShot.error}' , style: AppColors.textStyle1,),
                   );
                 }
                 return DataTable2(

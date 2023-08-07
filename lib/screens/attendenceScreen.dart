@@ -128,7 +128,7 @@ class _attendenceScreenState extends State<attendenceScreen>
                     child: Center(
                       child: Text(
                         snapShot.error.toString(),
-                        style: TextStyle(color: Colors.white, fontSize: 24),
+                        style: AppColors.textStyle1,
                       ),
                     ),
                   )),
@@ -184,7 +184,39 @@ class _attendenceScreenState extends State<attendenceScreen>
                                           return Center(
                                             child: CircularProgressIndicator(),
                                           );
-                                        } else {
+                                        }
+                                        if (snapShot.hasError) {
+                                          print(snapShot.error);
+                                          return Center(
+                                              child: Stack(
+                                                children: [
+                                                  Container(
+                                                    decoration: AppColors.decoration,
+                                                  ),
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey.shade200.withOpacity(0.25),
+                                                    ),
+                                                  ),
+                                                  Center(
+                                                      child: Container(
+                                                        width: MediaQuery.of(context).size.width - 50,
+                                                        height: MediaQuery.of(context).size.height - 550,
+                                                        decoration: BoxDecoration(
+                                                            color: Colors.grey.shade200.withOpacity(0.25),
+                                                            borderRadius: BorderRadius.circular(30)),
+                                                        child: Center(
+                                                          child: Text(
+                                                            snapShot.error.toString(),
+                                                            style: AppColors.textStyle1,
+                                                          ),
+                                                        ),
+                                                      )),
+                                                ],
+                                              ));
+                                        }
+
+                                        else {
                                           return FlutterMap(
                                             options: MapOptions(
                                               center: latLng.LatLng(

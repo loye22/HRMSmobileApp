@@ -38,7 +38,7 @@ class _attenddanceReportsScreenState extends State<attenddanceReportsScreen> {
                 return Center(
                   child: Text(
                     'error ${snapShot.error}',
-                    style: TextStyle(fontSize: 50),
+                    style: AppColors.textStyle1,
                   ),
                 );
               }
