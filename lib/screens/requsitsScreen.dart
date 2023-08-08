@@ -5,8 +5,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_launcher_icons/utils.dart';
 import 'package:mobilehrmss/main.dart';
 import 'package:mobilehrmss/models/Dialog.dart';
 import 'package:mobilehrmss/models/yesNoDialog.dart';
@@ -61,22 +63,23 @@ class _requsitsScreenState extends State<requsitsScreen> {
                           Column(
                         children: [
                           Column(
-                            children: this
-                                .requists
-                                .keys
-                                .map((e) => ListTile(
-                                      title: Text(e),
-                                      leading: Radio<String>(
-                                        value: e,
-                                        groupValue: selectedOption,
-                                        onChanged: (value) async {
-                                          setState(() {
-                                            selectedOption = value!;
-                                          });
-                                        },
-                                      ),
-                                    ))
-                                .toList(),
+                            children: [
+                              ...requists.keys
+                                  .map((e) => ListTile(
+                                        title: Text(e),
+                                        leading: Radio<String>(
+                                          value: e,
+                                          groupValue: selectedOption,
+                                          onChanged: (value) async {
+                                            setState(() {
+                                              selectedOption = value!;
+                                            });
+                                          },
+                                        ),
+                                      ))
+                                  .toList() ,
+                              SizedBox(height: 200,)
+                            ],
                           ),
                         ],
                       ),
@@ -643,7 +646,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
         return {};
       }
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance.collection(collectionName).get();
+          await FirebaseFirestore.instance.collection(collectionName).orderBy('title',descending: true).get();
       Map<String, String> workflowMap = {};
       for (QueryDocumentSnapshot<Map<String, dynamic>> docSnapshot
           in querySnapshot.docs) {
@@ -651,13 +654,41 @@ class _requsitsScreenState extends State<requsitsScreen> {
         String title = docSnapshot.data()['title'];
         workflowMap[title] = docId;
       }
-      this.requists = workflowMap;
+
+      //////////////////////////////////////////////////////////////////////////////////////
+      // filtering the requsits based on the department
+      String dep =  await getDepartment();
+      workflowMap.forEach((key, value) {
+        if (key.toLowerCase().contains("$dep".toLowerCase())) {
+          this.requists[key] = value;
+        }
+      });
+      ///////////////////////////////////////////////////////////////////////////////////////
+
+      //this.requists = workflowMap;
       return workflowMap;
     } catch (e) {
       MyDialog.showAlert(context, 'error $e');
       throw Exception('Failed to retrieve workflow data: $e');
     }
   }
+
+
+  Future<String> getDepartment() async {
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    DocumentSnapshot employeeSnapshot =
+    await _firestore.collection('Employee').doc(_auth.currentUser!.uid).get() ;
+    if (employeeSnapshot.exists) {
+      Map<String,dynamic> depatmentID =  employeeSnapshot.data() as Map<String,dynamic> ;
+      dynamic  depatmentCollection = await _firestore.collection('Departments').doc(depatmentID['departmentID']).get();
+      String department =  depatmentCollection['title'] ;
+      return department ;
+    } else {
+      return 'null'; // Employee not found
+    }
+  }
+
 
   Future<List<String>> getTimeOffTitles() async {
     List<String> titles = [];
