@@ -227,32 +227,22 @@ class _returnedWidgetState extends State<returnedWidget> {
               children: [
                 Text(
                   'Requist type : ${snapShot.data![widget.returnedData['title']] ?? '404NotFound'}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppColors.textStyle1,
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 Text(
                   'Submission Date:\n ${widget.returnedData['date'].toDate()}',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                  style:AppColors.textStyle1,
                 ),
                 SizedBox(
                   height: h,
                 ),
                 Text(
                   'Requested Days: ${reqisteddays ?? '------'}',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
+                  style: AppColors.textStyle1),
+
                 SizedBox(
                   height: h,
                 ),
@@ -261,10 +251,7 @@ class _returnedWidgetState extends State<returnedWidget> {
                         children: [
                           Text(
                             'From: ${DateFormat('yyyy/MM/dd').format(from.toDate())}',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                            style: AppColors.textStyle1,
                           ),
                           SizedBox(
                             width: 10,
@@ -280,7 +267,7 @@ class _returnedWidgetState extends State<returnedWidget> {
                             },
                             icon: Icon(
                               Icons.edit,
-                              color: Colors.white,
+                              color: AppColors.color1,
                             ),
                           )
                         ],
@@ -298,10 +285,7 @@ class _returnedWidgetState extends State<returnedWidget> {
                         children: [
                           Text(
                             'To: ${DateFormat('yyyy/MM/dd').format(to.toDate())}',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                            style: AppColors.textStyle1,
                           ),
                           SizedBox(
                             width: 10,
@@ -317,16 +301,13 @@ class _returnedWidgetState extends State<returnedWidget> {
                             },
                             icon: Icon(
                               Icons.edit,
-                              color: Colors.white,
+                              color: AppColors.color1,
                             ),
                           )
                         ],
                       )
                     : Text('-----',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold)),
+                        style: AppColors.textStyle1),
                 SizedBox(
                   height: h,
                 ),
@@ -335,10 +316,7 @@ class _returnedWidgetState extends State<returnedWidget> {
                         children: [
                           Text(
                             'No document were provided',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                            style: AppColors.textStyle1,
                           ),
                           SizedBox(
                             width: 10,
@@ -385,7 +363,7 @@ class _returnedWidgetState extends State<returnedWidget> {
                               },
                               icon: Icon(
                                 Icons.edit,
-                                color: Colors.white,
+                                color: AppColors.color1,
                               ))
                         ],
                       )
@@ -421,10 +399,7 @@ class _returnedWidgetState extends State<returnedWidget> {
                     : SizedBox.shrink(),
                 Text(
                   'Reason \n ${widget.returnedData['returnReason']}',
-                  style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red),
+                  style: AppColors.textStyle1,
                 ),
                 SizedBox(
                   height: 20,

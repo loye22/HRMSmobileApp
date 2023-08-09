@@ -40,6 +40,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
   File? file = null;
   final TextEditingController _textEditingController = TextEditingController();
   String? fileName = null;
+  String globalDep = '' ;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +67,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
                             children: [
                               ...requists.keys
                                   .map((e) => ListTile(
-                                        title: Text(e),
+                                        title: Text(e.replaceAll(this.globalDep, '')),
                                         leading: Radio<String>(
                                           value: e,
                                           groupValue: selectedOption,
@@ -255,48 +256,50 @@ class _requsitsScreenState extends State<requsitsScreen> {
             decoration: BoxDecoration(
                 //   color: Colors.grey.shade200.withOpacity(0.55),
                 borderRadius: BorderRadius.circular(30)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Text('Type your requist reason here',
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: AppColors.staticColor,
-                          fontWeight: FontWeight.bold)),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Card(
-                    elevation: 5,
-                    child: Animate(
-                      effects: [FadeEffect(), ScaleEffect()],
-                      child: Container(
-                        width: MediaQuery.of(context).size.width - 100,
-                        padding: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                        ),
-                        child: TextFormField(
-                          maxLines: null,
-                          controller: _textEditingController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Type here',
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: Text('Type your requist reason here',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: AppColors.staticColor,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: Card(
+                      elevation: 5,
+                      child: Animate(
+                        effects: [FadeEffect(), ScaleEffect()],
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 100,
+                          padding: EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          ),
+                          child: TextFormField(
+                            maxLines: null,
+                            controller: _textEditingController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Type here',
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
@@ -658,8 +661,9 @@ class _requsitsScreenState extends State<requsitsScreen> {
       //////////////////////////////////////////////////////////////////////////////////////
       // filtering the requsits based on the department
       String dep =  await getDepartment();
+      globalDep = dep ;
       workflowMap.forEach((key, value) {
-        if (key.toLowerCase().contains("$dep".toLowerCase())) {
+        if (key.toLowerCase().contains(" $dep".toLowerCase())) {
           this.requists[key] = value;
         }
       });
