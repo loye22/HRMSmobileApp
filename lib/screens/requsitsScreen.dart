@@ -13,6 +13,7 @@ import 'package:mobilehrmss/main.dart';
 import 'package:mobilehrmss/models/Dialog.dart';
 import 'package:mobilehrmss/models/yesNoDialog.dart';
 import 'package:mobilehrmss/screens/homeScreen.dart';
+import 'package:random_string/random_string.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../models/AppColors.dart';
@@ -29,8 +30,8 @@ class requsitsScreen extends StatefulWidget {
 }
 
 class _requsitsScreenState extends State<requsitsScreen> {
-  Map<String, String> requists = {};
-  String selectedOption = '';
+  Map<String, String> requists = {'a': '1', 'b': '2'};
+  String selectedOption = 'a';
   int counter = 1;
   bool isLoading = false;
   List<String> timeOffTitiles = [];
@@ -40,7 +41,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
   File? file = null;
   final TextEditingController _textEditingController = TextEditingController();
   String? fileName = null;
-  String globalDep = '' ;
+  String globalDep = '';
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +49,72 @@ class _requsitsScreenState extends State<requsitsScreen> {
     switch (counter) {
       case 1:
         // first screen
-        widgetToDisplay = LayoutBuilder(
+        widgetToDisplay = StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) =>
+              LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
-          return Container(
+              return Container(
+                width: constraints.maxWidth - 10,
+                height: constraints.maxHeight - 180,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Text(
+                          'Select your request',
+                          style: AppColors.textStyle1,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Card(
+                          elevation: 4,
+                          child: Container(
+                            width: double.infinity,
+                            child: DropdownButton<String>(
+                              style: AppColors.textStyle1,
+                              isExpanded: true,
+                              underline: SizedBox(),
+                              value: this.selectedOption,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedOption = newValue!;
+                                  //   print(this.requists[selectedOption]);
+                                });
+                              },
+                              items: this
+                                  .requists
+                                  .keys
+                                  .map<DropdownMenuItem<String>>(
+                                (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Center(
+                                        child: Text(value.replaceAll(
+                                            this.globalDep, ''))),
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 200),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+
+        /*LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+            return Container(
               width: constraints.maxWidth - 50,
               height: constraints.maxHeight - 180,
               decoration: BoxDecoration(
@@ -86,7 +150,8 @@ class _requsitsScreenState extends State<requsitsScreen> {
                       ),
                     ),
                   )));
-        });
+        });*/
+
         break;
       case 2:
         // 2.1 let the employee selate the start and end dates and calc the days
@@ -116,12 +181,16 @@ class _requsitsScreenState extends State<requsitsScreen> {
                   ),
                   Container(
                     child: SfDateRangePicker(
-                      endRangeSelectionColor: AppColors.staticColor,
-                      startRangeSelectionColor: AppColors.staticColor,
-                      rangeSelectionColor: AppColors.staticColor,
-                      onSelectionChanged: _onSelectionChanged,
-                      selectionMode: DateRangePickerSelectionMode.range,
-                    ),
+                        initialSelectedRange: PickerDateRange(
+                          DateTime.now(),
+                          DateTime.now(),
+                        ),
+                        endRangeSelectionColor: AppColors.staticColor,
+                        startRangeSelectionColor: AppColors.staticColor,
+                        rangeSelectionColor: AppColors.staticColor,
+                        onSelectionChanged: _onSelectionChanged,
+                        selectionMode: DateRangePickerSelectionMode.range,
+                        minDate: DateTime.now()),
                   ),
                   SizedBox(
                     height: 15,
@@ -172,8 +241,8 @@ class _requsitsScreenState extends State<requsitsScreen> {
                       }
                     },
                     child: Container(
-                      width: 150,
-                      height: 50,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.1,
                       decoration: BoxDecoration(
                           color: AppColors.staticColor,
                           borderRadius: BorderRadius.circular(30)),
@@ -189,12 +258,13 @@ class _requsitsScreenState extends State<requsitsScreen> {
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Expanded(
-                                    child: Text(
-                                  'Upload doc',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ))
+                                Center(
+                                  child: Text(
+                                    'Upload doc',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                )
                               ])),
                     ),
                   ),
@@ -244,7 +314,6 @@ class _requsitsScreenState extends State<requsitsScreen> {
             ),
           ),
         );
-
         break;
       case 3:
         // to handel non-time off requists
@@ -284,7 +353,8 @@ class _requsitsScreenState extends State<requsitsScreen> {
                           padding: EdgeInsets.all(10.0),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.0)),
                           ),
                           child: TextFormField(
                             maxLines: null,
@@ -313,6 +383,7 @@ class _requsitsScreenState extends State<requsitsScreen> {
         );
         break;
     }
+
     return Scaffold(
       body: Stack(alignment: Alignment.center, children: [
         Container(
@@ -645,11 +716,16 @@ class _requsitsScreenState extends State<requsitsScreen> {
     // Replace 'workflow' with the actual collection name in your Firebase Firestore
     String collectionName = 'workflow';
     try {
-      if (!this.requists.isEmpty) {
+      if (this.requists.isEmpty) {
         return {};
       }
+      print('debug');
+
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance.collection(collectionName).orderBy('title',descending: true).get();
+          await FirebaseFirestore.instance
+              .collection(collectionName)
+              .orderBy('title', descending: true)
+              .get();
       Map<String, String> workflowMap = {};
       for (QueryDocumentSnapshot<Map<String, dynamic>> docSnapshot
           in querySnapshot.docs) {
@@ -660,15 +736,16 @@ class _requsitsScreenState extends State<requsitsScreen> {
 
       //////////////////////////////////////////////////////////////////////////////////////
       // filtering the requsits based on the department
-      String dep =  await getDepartment();
-      globalDep = dep ;
+      String dep = await getDepartment();
+      globalDep = dep;
+      this.requists = {};
       workflowMap.forEach((key, value) {
-        if (key.toLowerCase().contains(" $dep".toLowerCase())) {
+        if (key.toLowerCase().contains(" ${dep.trim()}".toLowerCase())) {
           this.requists[key] = value;
+          if (this.selectedOption == 'a') this.selectedOption = key;
         }
       });
       ///////////////////////////////////////////////////////////////////////////////////////
-
       //this.requists = workflowMap;
       return workflowMap;
     } catch (e) {
@@ -677,22 +754,26 @@ class _requsitsScreenState extends State<requsitsScreen> {
     }
   }
 
-
   Future<String> getDepartment() async {
     FirebaseAuth _auth = FirebaseAuth.instance;
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    DocumentSnapshot employeeSnapshot =
-    await _firestore.collection('Employee').doc(_auth.currentUser!.uid).get() ;
+    DocumentSnapshot employeeSnapshot = await _firestore
+        .collection('Employee')
+        .doc(_auth.currentUser!.uid)
+        .get();
     if (employeeSnapshot.exists) {
-      Map<String,dynamic> depatmentID =  employeeSnapshot.data() as Map<String,dynamic> ;
-      dynamic  depatmentCollection = await _firestore.collection('Departments').doc(depatmentID['departmentID']).get();
-      String department =  depatmentCollection['title'] ;
-      return department ;
+      Map<String, dynamic> depatmentID =
+          employeeSnapshot.data() as Map<String, dynamic>;
+      dynamic depatmentCollection = await _firestore
+          .collection('Departments')
+          .doc(depatmentID['departmentID'])
+          .get();
+      String department = depatmentCollection['title'];
+      return department;
     } else {
       return 'null'; // Employee not found
     }
   }
-
 
   Future<List<String>> getTimeOffTitles() async {
     List<String> titles = [];
@@ -748,6 +829,22 @@ class _requsitsScreenState extends State<requsitsScreen> {
     // TODO: implement your code here
     this.sDate = args.value.startDate;
     this.eDate = args.value.endDate;
+
+    if (this.eDate != null && this.sDate != null) {
+      // calc how many days do the emplyee requisted
+      int requsitedDayes = this.sDate!.difference(this.eDate!).inDays.abs() + 1;
+      // calc the avalable days
+      double avalableDays = double.parse(timeOffDetaks!["consume"]) -
+          double.parse(timeOffDetaks!["duration"]);
+      avalableDays = avalableDays.abs();
+      if (requsitedDayes <= avalableDays) {
+      } else {
+        // the user exceed the avalable days in his profile
+        MyDialog.showAlert(context,
+            'The number of days off you requested exceeds the available days in your profile.');
+      }
+    }
+
     print(this.sDate.toString() + " " + this.eDate.toString());
     // print(args.value.startDate.difference(args.value.endDate).inDayes);
   }

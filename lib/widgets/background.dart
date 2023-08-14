@@ -40,15 +40,15 @@ class Background extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 0,
+            bottom: 10,
             right: 0,
             child: Animate(
-              effects: [FadeEffect(delay: Duration(milliseconds: 1000 ) , duration: Duration(milliseconds: 1000))],
+              effects: [FadeEffect(delay: Duration(milliseconds: 1500 ) , duration: Duration(milliseconds: 1000))],
               child: Container(
-                width: 200,
-                height: MediaQuery.of(context).size.height * 0.22,
+                width: 180,
+                height:  MediaQuery.of(context).size.height * 0.18,
                 child: Image.asset(
-                    "assets/bottom_Main.png",
+                    "assets/tsti.png",
                     width: size.width
                 ),
               ),
